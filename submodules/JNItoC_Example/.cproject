@@ -43,6 +43,7 @@
 								</option>
 								<option id="gnu.cpp.compiler.option.other.pic.138339652" name="Position Independent Code (-fPIC)" superClass="gnu.cpp.compiler.option.other.pic" useByScannerDiscovery="false" value="true" valueType="boolean"/>
 								<option id="gnu.cpp.compiler.option.other.other.27882149" name="Other flags" superClass="gnu.cpp.compiler.option.other.other" useByScannerDiscovery="false" value="-c -fmessage-length=0 -Wl,--add-stdcall-alias " valueType="string"/>
+								<option id="gnu.cpp.compiler.option.dialect.std.695859480" superClass="gnu.cpp.compiler.option.dialect.std" value="gnu.cpp.compiler.dialect.default" valueType="enumerated"/>
 								<inputType id="cdt.managedbuild.tool.gnu.cpp.compiler.input.1347422473" superClass="cdt.managedbuild.tool.gnu.cpp.compiler.input"/>
 							</tool>
 							<tool id="cdt.managedbuild.tool.gnu.cross.c.linker.1199015124" name="Cross GCC Linker" superClass="cdt.managedbuild.tool.gnu.cross.c.linker">

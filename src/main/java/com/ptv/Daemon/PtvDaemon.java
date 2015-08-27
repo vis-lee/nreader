@@ -13,7 +13,7 @@ public class PtvDaemon
 {
 	
     // Define a static logger variable so that it references the
-    // Logger instance named "MyApp".
+    // Logger instance named "PtvDaemon".
     private static final Logger logger = LogManager.getLogger(PtvDaemon.class);
     
     public static void main( String[] args )
