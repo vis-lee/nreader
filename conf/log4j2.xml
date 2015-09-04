@@ -8,22 +8,26 @@
             <PatternLayout pattern="[%-5level] %d{yyyy-MM-dd HH:mm:ss.SSS} [%t] %c{1} - %msg%n"/>
         </Console>
         <RollingFile name="trace-log" fileName="${log-path}/ptv-nfc-trace.log"
-                     filePattern="${log-path}/dating-trace-%d{yyyy-MM-dd}.log">
+                     filePattern="${log-path}/ptv-nfc-trace-%d{yyyy-MM-dd}-%i.log.gz">
             <PatternLayout>
-                <pattern>[%-5level] %d{yyyy-MM-dd HH:mm:ss.SSS} [%t] %c{1} - %msg%n</pattern>
+                <pattern>[%-5level] %d{MM-dd HH:mm:ss.SSS} [%t] %c{1} - %msg%n</pattern>
             </PatternLayout>
             <Policies>
                 <TimeBasedTriggeringPolicy interval="1" modulate="true"/>
+                <SizeBasedTriggeringPolicy size="250 MB"/>
             </Policies>
+            <DefaultRolloverStrategy max="20"/>
         </RollingFile>
         <RollingFile name="error-log" fileName="${log-path}/ptv-nfc-error.log"
-                     filePattern="${log-path}/dating-error-%d{yyyy-MM-dd}.log">
+                     filePattern="${log-path}/ptv-nfc-error-%d{yyyy-MM-dd}.log.gz">
             <PatternLayout>
-                <pattern>[%-5level] %d{yyyy-MM-dd HH:mm:ss.SSS} [%t] %c{1} - %msg%n</pattern>
+                <pattern>[%-5level] %d{MM-dd HH:mm:ss.SSS} [%t] %c{1} - %msg%n</pattern>
             </PatternLayout>
             <Policies>
                 <TimeBasedTriggeringPolicy interval="1" modulate="true"/>
+                <SizeBasedTriggeringPolicy size="250 MB"/>
             </Policies>
+            <DefaultRolloverStrategy max="20"/>
         </RollingFile>
     </Appenders>
     <Loggers>

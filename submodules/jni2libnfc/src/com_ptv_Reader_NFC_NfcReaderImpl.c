@@ -11,6 +11,7 @@
 #include <nfc/nfc.h>
 
 #include "com_ptv_Reader_NFC_NfcReaderImpl.h"
+#include "libnfc_interface.h"
 
 
 /*
@@ -18,10 +19,15 @@
  * Method:    openNfcReader
  * Signature: ()I
  */
-JNIEXPORT jint JNICALL Java_com_ptv_Reader_NFC_NfcReaderImpl_openNfcReader
+JNIEXPORT jint JNICALL Java_com_ptv_Reader_NFC_NfcReaderImpl_openNfcDevice
   (JNIEnv *env, jclass cls){
 
-	return open_nfc_reader();
+	int ret = open_nfc_reader();
+
+	// we need to flush out the buffer before we return to Java
+	fflush(stdout);
+
+	return ret;
 
 }
 
@@ -30,10 +36,13 @@ JNIEXPORT jint JNICALL Java_com_ptv_Reader_NFC_NfcReaderImpl_openNfcReader
  * Method:    closeNfcReader
  * Signature: ()I
  */
-JNIEXPORT void JNICALL Java_com_ptv_Reader_NFC_NfcReaderImpl_closeNfcReader
+JNIEXPORT void JNICALL Java_com_ptv_Reader_NFC_NfcReaderImpl_closeNfcDevice
   (JNIEnv *env, jclass cls){
 
 	close_nfc_reader();
+
+	// we need to flush out the buffer before we return to Java
+	fflush(stdout);
 
 }
 
@@ -44,9 +53,10 @@ JNIEXPORT void JNICALL Java_com_ptv_Reader_NFC_NfcReaderImpl_closeNfcReader
  * Method:    getReaderName
  * Signature: ()Ljava/lang/String;
  */
-JNIEXPORT jstring JNICALL Java_com_ptv_Reader_NFC_NfcReaderImpl_getReaderName
+JNIEXPORT jstring JNICALL Java_com_ptv_Reader_NFC_NfcReaderImpl_getDeviceName
   (JNIEnv *env, jclass cls){
 
+	// no need to release the const char *
 	const char * ret = get_reader_name();
 
 	return (ret != NULL) ? (*env)->NewStringUTF(env, ret) : NULL;
@@ -69,6 +79,9 @@ JNIEXPORT jstring JNICALL Java_com_ptv_Reader_NFC_NfcReaderImpl_startPolling
 
 	nfc_free(nfc_target);
 
+	// we need to flush out the buffer before we return to Java
+	fflush(stdout);
+
 	return jnfc_target;
 
 }
@@ -83,5 +96,8 @@ JNIEXPORT void JNICALL Java_com_ptv_Reader_NFC_NfcReaderImpl_stopPolling
 (JNIEnv *env, jclass cls){
 
 	stop_polling(SIGINT);
+
+	// we need to flush out the buffer before we return to Java
+	fflush(stdout);
 
 }

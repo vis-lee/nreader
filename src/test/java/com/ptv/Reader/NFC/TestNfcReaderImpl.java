@@ -3,10 +3,15 @@
  */
 package com.ptv.Reader.NFC;
 
+import java.io.PrintStream;
+
+import org.apache.logging.log4j.Level;
 import org.apache.logging.log4j.LogManager;
 import org.apache.logging.log4j.Logger;
 
+import com.ptv.Daemon.PtvDaemon;
 import junit.framework.TestCase;
+import thirdparty.LoggingOutputStream;
 
 /**
  * @author Vis.Lee
@@ -37,17 +42,27 @@ public class TestNfcReaderImpl extends TestCase {
 		
 		NfcReaderImpl nfc = new NfcReaderImpl();
 		
+		//redirect the STDOUT to our stream
+		//System.setErr( new PrintStream( new LoggingOutputStream( LogManager.getLogger(), Level.ERROR ), true) );
+		System.setOut( new PrintStream( new LoggingOutputStream( LogManager.getLogger(), Level.INFO ), true) );
+		
 		//open nfc
-		int ret = nfc.openNfcReader();
+		int ret = nfc.openNfcDevice();
 		assertEquals(0, ret);
 		
 		//get reader's name
-		String name = nfc.getReaderName();
+		String name = nfc.getDeviceName();
 		assertNotNull(name);
 		System.out.printf("the reader's name = %s", name);
 		
 		//start polling
-		String id = nfc.startPolling();
+		String id = null;
+		try {
+			id = nfc.startPolling();
+		} catch (Exception e) {
+			// TODO Auto-generated catch block
+			e.printStackTrace();
+		}
 		assertNotNull(id);
 		System.out.printf("the card ID = %s", id);
 		
@@ -55,7 +70,7 @@ public class TestNfcReaderImpl extends TestCase {
 		nfc.stopPolling();
 		
 		//close nfc reader
-		nfc.closeNfcReader();
+		nfc.closeNfcDevice();
 		
 		logger.info("end testing");
 		

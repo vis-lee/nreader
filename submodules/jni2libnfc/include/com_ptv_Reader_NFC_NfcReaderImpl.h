@@ -9,26 +9,26 @@ extern "C" {
 #endif
 /*
  * Class:     com_ptv_Reader_NFC_NfcReaderImpl
- * Method:    openNfcReader
+ * Method:    openNfcDevice
  * Signature: ()I
  */
-JNIEXPORT jint JNICALL Java_com_ptv_Reader_NFC_NfcReaderImpl_openNfcReader
+JNIEXPORT jint JNICALL Java_com_ptv_Reader_NFC_NfcReaderImpl_openNfcDevice
   (JNIEnv *, jclass);
 
 /*
  * Class:     com_ptv_Reader_NFC_NfcReaderImpl
- * Method:    closeNfcReader
+ * Method:    closeNfcDevice
  * Signature: ()V
  */
-JNIEXPORT void JNICALL Java_com_ptv_Reader_NFC_NfcReaderImpl_closeNfcReader
+JNIEXPORT void JNICALL Java_com_ptv_Reader_NFC_NfcReaderImpl_closeNfcDevice
   (JNIEnv *, jclass);
 
 /*
  * Class:     com_ptv_Reader_NFC_NfcReaderImpl
- * Method:    getReaderName
+ * Method:    getDeviceName
  * Signature: ()Ljava/lang/String;
  */
-JNIEXPORT jstring JNICALL Java_com_ptv_Reader_NFC_NfcReaderImpl_getReaderName
+JNIEXPORT jstring JNICALL Java_com_ptv_Reader_NFC_NfcReaderImpl_getDeviceName
   (JNIEnv *, jclass);
 
 /*

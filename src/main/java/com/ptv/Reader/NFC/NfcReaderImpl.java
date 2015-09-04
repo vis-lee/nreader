@@ -11,11 +11,14 @@ public class NfcReaderImpl {
 
 	static { System.loadLibrary("PtvJni2Nfc"); }
 	
-    public static native int openNfcReader();
-    public static native void closeNfcReader();
+	/*
+	 * c interface, call to the libnfc
+	 */
+    public static native int openNfcDevice();
+    public static native void closeNfcDevice();
     
-    public static native String getReaderName();
-    public static native String startPolling();
+    public static native String getDeviceName();
+    public static native String startPolling() throws Exception;
     public static native void stopPolling();
     
     

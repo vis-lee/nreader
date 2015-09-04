@@ -71,8 +71,10 @@
 
 #define MAX_DEVICE_COUNT 16
 
-static nfc_device *pnd = NULL;
-static nfc_context *context = NULL;
+
+// TODO we should create a container for the devices after POC ( return an index to upper layer and call the function with the index )
+static nfc_device *g_pnd = NULL;
+static nfc_context *g_context = NULL;
 
 
 /*
@@ -87,6 +89,9 @@ static nfc_context *context = NULL;
 static uint8_t uiPollNr = 0xFF;
 static uint8_t uiPeriod = 2;
 
+/*
+ * we want to detect all kinds of NFC card
+ */
 static nfc_modulation nmModulations[5] = {
   { .nmt = NMT_ISO14443A, .nbr = NBR_106 },
   { .nmt = NMT_ISO14443B, .nbr = NBR_106 },
@@ -111,8 +116,8 @@ static size_t szModulations = NUM_MOD;
 void stop_polling(int sig)
 {
   (void) sig;
-  if (pnd != NULL){
-    nfc_abort_command(pnd);
+  if (g_pnd != NULL){
+    nfc_abort_command(g_pnd);
     WARN("received interrupt signal! terminate nfc polling...");
   } else {
 	ERR("received interrupt signal! BUT pnd is NULL!");
@@ -137,9 +142,11 @@ char * show_nfc_target(const nfc_target *pnt, bool verbose)
  */
 int open_nfc_reader(void){
 
+  nfc_device *pnd = NULL;
+  nfc_context *context = NULL;
+
   // Display libnfc version
   const char *acLibnfcVersion = nfc_version();
-
   printf("%s uses libnfc %s\n", __func__, acLibnfcVersion);
 
   // init context
@@ -166,7 +173,11 @@ int open_nfc_reader(void){
     return NFC_EIO;
   }
 
-  printf("NFC reader: %s opened\n", nfc_device_get_name(pnd));
+  // assign to global var
+  g_pnd = pnd;
+  g_context = context;
+
+  printf("NFC reader: %s opened\n", nfc_device_get_name(g_pnd));
 
   return NFC_SUCCESS;
 
@@ -180,14 +191,16 @@ int open_nfc_reader(void){
 void close_nfc_reader(void){
 
 
-  if (pnd != NULL){
-	nfc_abort_command(pnd);
-	nfc_close(pnd);
+  if (g_pnd != NULL){
+	nfc_abort_command(g_pnd);
+	nfc_close(g_pnd);
+	g_pnd = NULL;
 	printf("close the device and ");
   }
 
-  if(context != NULL){
-	nfc_exit(context);
+  if(g_context != NULL){
+	nfc_exit(g_context);
+	g_context = NULL;
 	printf("close the nfc context success. \n");
   }
 
@@ -197,8 +210,8 @@ void close_nfc_reader(void){
 
 char * get_reader_name(void){
 
-	if(pnd != NULL){
-		return nfc_device_get_name(pnd);
+	if(g_pnd != NULL){
+		return nfc_device_get_name(g_pnd);
 	}
 
 	return NULL;
@@ -214,8 +227,8 @@ char * start_polling(void)
   int res = 0;
   char *target = NULL;
 
-  if ((res = nfc_initiator_poll_target(pnd, nmModulations, szModulations, uiPollNr, uiPeriod, &nt))  < 0) {
-    nfc_perror(pnd, "nfc_initiator_poll_target");
+  if ((res = nfc_initiator_poll_target(g_pnd, nmModulations, szModulations, uiPollNr, uiPeriod, &nt))  < 0) {
+    nfc_perror(g_pnd, "nfc_initiator_poll_target");
   }
 
   if (res > 0) {
@@ -225,8 +238,8 @@ char * start_polling(void)
   }
 
   //printf("Waiting for card removing...");
-  while (0 == nfc_initiator_target_is_present(pnd, NULL)) {}
-  nfc_perror(pnd, "nfc_initiator_target_is_present");
+  while (0 == nfc_initiator_target_is_present(g_pnd, NULL)) {}
+  nfc_perror(g_pnd, "nfc_initiator_target_is_present");
 
   return target;
 
