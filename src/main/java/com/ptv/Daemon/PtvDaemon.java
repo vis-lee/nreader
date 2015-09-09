@@ -39,8 +39,7 @@ public class PtvDaemon
 		
 		
 		// init reader manager
-		readersManager = new ReadersManager();
-		readersManager.initReadersManager();
+		readersManager = ReadersManager.getReadersManager();
 		
 		
 		// register shutdown hook
@@ -56,7 +55,7 @@ public class PtvDaemon
 		
 		// run the shutdown hooks
 		// 1. shutdown the reader manager
-		readersManager.releaseReadersManager();
+		ReadersManager.terminateReadersManager();
 		
 		// ALL end
 		logger.info(" ptv daemon exit! ");

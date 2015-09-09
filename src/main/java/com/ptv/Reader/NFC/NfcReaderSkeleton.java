@@ -3,8 +3,6 @@
  */
 package com.ptv.Reader.NFC;
 
-import java.util.UUID;
-
 import com.ptv.Reader.AbstractReader;
 import com.ptv.Reader.ReaderState;
 
@@ -77,7 +75,8 @@ public class NfcReaderSkeleton extends AbstractReader {
 				
 			} else {
 				
-				// TODO check the NFC device error code
+				// check the NFC device error code
+				logger.error("openNfcDevice returned non-0 code, code = {}", ret);
 			}
 		}
 		
@@ -112,7 +111,7 @@ public class NfcReaderSkeleton extends AbstractReader {
 			// call libnfc close
 			NfcReaderImpl.closeNfcDevice();
 			
-			setDevState( ReaderState.DEV_UP );
+			setDevState( ReaderState.DEV_DOWN );
 		}
 		
 	}
@@ -129,9 +128,9 @@ public class NfcReaderSkeleton extends AbstractReader {
 	 * @see com.ptv.Reader.IDReader#readID()
 	 */
 	@Override
-	public UUID readIDFromReader() throws Exception {
+	public String readIDFromReader() throws Exception {
 		
-		UUID uid = null;
+		String id = null;
 		
 		// we need to flush out the buffer before we call to JNI
 		System.out.flush();
@@ -140,8 +139,8 @@ public class NfcReaderSkeleton extends AbstractReader {
 			
 			String result = NfcReaderImpl.startPolling();
 			
-			// parse result
-			uid = parseNfcResult(result);
+			// parse the result
+			id = parseNfcResult(result);
 			
 		} catch (InterruptedException e) {
 			
@@ -156,10 +155,10 @@ public class NfcReaderSkeleton extends AbstractReader {
 			throw e;
 		}
 		
-		return uid;
+		return id;
 	}
 
-	private UUID parseNfcResult(String result) {
+	private String parseNfcResult(String result) {
 		/*
 		 * the HAL used libnfc which return the following result:
 		 *   ISO/IEC 14443A (106 kbps) target:
@@ -169,9 +168,9 @@ public class NfcReaderSkeleton extends AbstractReader {
 		 */
 		logger.debug("detect card: \n {}", result.toString());
 
-		UUID uid = null;
 		String regex = new String("[:\n]");
 		String[] strs = result.split(regex);
+		String extract = null;
 		
 		// find where the UID is
 		for(int i = 0; i < strs.length; i++) {
@@ -179,13 +178,17 @@ public class NfcReaderSkeleton extends AbstractReader {
 			if(strs[i].contains("UID")){
 				
 				// we want the string followed UID
-				uid = UUID.fromString(strs[i+1]);
+				extract = strs[i+1];
+				
+				// replace the whitespace and \n 
+				extract = extract.replaceAll("\\s+", "");
+				
 				break;
 			}
 			
 		};
 		
-		return uid;
+		return extract;
 	}
 
 	@Override

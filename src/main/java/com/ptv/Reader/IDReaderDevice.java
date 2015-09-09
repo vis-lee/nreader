@@ -1,7 +1,5 @@
 package com.ptv.Reader;
 
-import java.util.UUID;
-
 /**
  * This is the device control APIs layer for a ID reader. Need to implement the code for device 
  * HAL control.
@@ -32,6 +30,6 @@ public interface IDReaderDevice {
 	/*
 	 * read ID from device
 	 */
-	public UUID readIDFromReader() throws Exception;
+	public String readIDFromReader() throws Exception;
 	
 }

@@ -12,8 +12,9 @@ public interface IDReadersManager {
 	/*
 	 * initial function and release function
 	 */
-	public int initReadersManager();
-	public void releaseReadersManager();
+	// public int initReadersManager();
+	// public void releaseReadersManager();
+	public IDReadersManager getReadersManager();
 	
 	/*
 	 * get the reference of Java IDReader instance by name

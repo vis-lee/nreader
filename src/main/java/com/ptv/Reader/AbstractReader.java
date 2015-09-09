@@ -3,6 +3,7 @@
  */
 package com.ptv.Reader;
 
+import java.util.Arrays;
 import java.util.UUID;
 import java.util.concurrent.TimeUnit;
 
@@ -28,8 +29,6 @@ public abstract class AbstractReader extends Thread implements IDReader, IDReade
 	public final static long CONSUMER_POLL_TIME = 1;  // second
 	
 	public final static long WAIT_TIMER = 3; //seconds
-	
-//	protected volatile IDReader reader;
 
 	// a flag to indicate worker to keep working or not
 	protected ReaderState alive = ReaderState.WORKER_DOWN;
@@ -62,43 +61,28 @@ public abstract class AbstractReader extends Thread implements IDReader, IDReade
 	 */
 	public class ReaderWorker extends Thread{
 		
+		static public final String workerName = "ReaderWorker";
+		
 		/* (non-Javadoc)
 		 * @see java.lang.Thread#run()
 		 */
 		@Override
 		public void run() {
 			
-			logger.info("the {} is starting", AbstractReader.class.getSimpleName());
+			this.setName(workerName);
+			
+			logger.info("the {} is starting", workerName);
 			
 			while( alive == ReaderState.WORKER_ALIVE ){
 				
 				if( getReaderState() == ReaderState.DEV_UP ){
 					
 					try {
-						
-						// 2. polling
-						CustomerInfo ci = new CustomerInfo( readIDFromReader() );
-						
-						// 3. return the cardID to broker
-						broker.offer(ci);
+						__readIDFromDevice();
 						
 					} catch (Exception e) {
 						
-						// if the interrupt caused by the device been detached accidentally or jvm dispose
-						if( Thread.interrupted() ){
-							
-							if( getReaderState() == ReaderState.DEV_DOWN ){
-							
-								// TODO if the device isn't up, clear my state
-								logger.warn("received interrupt and DEV_DOWN. Trying to init device again!");
-							}
-							
-							// interrupted by dispose function
-							if( alive == ReaderState.WORKER_DOWN ){
-								
-								logger.debug("received interrupt and WORKER_DOWN, shoule be called from dispose function!");
-							}
-						}
+						logger.error(e.getMessage());
 					}
 					
 				} else { // if( getReaderState() == ReaderState.DEV_UP )
@@ -114,7 +98,32 @@ public abstract class AbstractReader extends Thread implements IDReader, IDReade
 			super.run();
 		}
 
+	}
+	
+	
+	private UUID alignToUUID(String idStr){
+		
+		UUID uid = null;
 
+		if( idStr.length() < CustomerInfo.UUID_LENGTH ){
+			
+			// completed with 0
+			char[] trans = new char[CustomerInfo.UUID_LENGTH-idStr.length()];
+			Arrays.fill(trans, '0');
+			
+			String s = new String(trans);
+			
+			//concatenate 
+			idStr = s.concat(idStr);
+		}
+		
+		
+		// Use regex to format the hex string by inserting hyphens in the canonical format: 8-4-4-4-12
+		String uuidFormat = idStr.replaceFirst("([0-9a-fA-F]{8})([0-9a-fA-F]{4})([0-9a-fA-F]{4})([0-9a-fA-F]{4})([0-9a-fA-F]+)", "$1-$2-$3-$4-$5");
+		
+		uid = UUID.fromString(uuidFormat);
+		
+		return uid;
 		
 	}
 	
@@ -187,15 +196,60 @@ public abstract class AbstractReader extends Thread implements IDReader, IDReade
 	//																							//
 	//******************************************************************************************//
 	
+	/*
+	 * read id from device and put it into broker
+	 */
+	public void __readIDFromDevice() throws Exception {
+		
+		try {
+			
+			// 2. polling device
+			String idStr = readIDFromReader();
+			
+			if( idStr != null){
+				
+				CustomerInfo ci = new CustomerInfo( alignToUUID(idStr) );
+
+				// 3. return the cardID to broker
+				broker.offer(ci);
+				
+			} else {
+				logger.error("catched NULL UID!");
+			}
+			
+			
+		} catch (Exception e) {
+			
+			// if the interrupt caused by the device been detached accidentally or jvm dispose
+			if( Thread.interrupted() ){
+				
+				if( getReaderState() == ReaderState.DEV_DOWN ){
+				
+					// TODO if the device isn't up, clear my state
+					logger.warn("received interrupt and DEV_DOWN. Trying to init device again!");
+				}
+				
+				// interrupted by dispose function
+				if( alive == ReaderState.WORKER_DOWN ){
+					
+					logger.debug("received interrupt and WORKER_DOWN, shoule be called from dispose function!");
+				}
+				
+			}
+			
+			logger.error(e.getMessage());
+			logger.debug(e.getStackTrace());
+		}
+	}
 	
 	/*
-	 * 3. read function for the caller
+	 * 3. provide "read" interface of IDReader for the caller 
 	 */
 	public CustomerInfo readID() {
 		
 		// read ID from broker
-		// return broker.poll(CONSUMER_POLL_TIME, TimeUnit.SECONDS);
-		return broker.poll();
+		return broker.poll(CONSUMER_POLL_TIME, TimeUnit.MILLISECONDS);
+		// return broker.poll();
 		
 	}
 	
@@ -306,7 +360,7 @@ public abstract class AbstractReader extends Thread implements IDReader, IDReade
 	/* (non-Javadoc)
 	 * @see com.ptv.Reader.IDReaderDevice#readIDFromReader()
 	 */
-	abstract public UUID readIDFromReader() throws Exception;
+	abstract public String readIDFromReader() throws Exception;
 
 	// TODO REMOVE THIS
 //	/*

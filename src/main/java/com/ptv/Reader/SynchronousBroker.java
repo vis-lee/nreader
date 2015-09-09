@@ -48,12 +48,12 @@ public class SynchronousBroker {
 	}
 
 
-	public CustomerInfo poll(long consumerPollTime, TimeUnit seconds) {
+	public CustomerInfo poll(long consumerPollTime, TimeUnit tu) {
 
 		try {
 			
 			logger.debug( "thread = {}, poll from broker with timer set to {} seconds ", Thread.currentThread().getName(), consumerPollTime );
-			return this.queue.poll(consumerPollTime, seconds);
+			return this.queue.poll(consumerPollTime, tu);
 			
 		} catch (InterruptedException e) {
 			

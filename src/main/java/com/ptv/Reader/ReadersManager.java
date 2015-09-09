@@ -20,9 +20,11 @@ import com.ptv.Reader.NFC.NfcReaderSkeleton;
  * @author Vis.Lee
  *
  */
-public class ReadersManager implements IDReadersManager {
+public class ReadersManager {
 
 	protected static final Logger logger = LogManager.getLogger( ReadersManager.class.getName() );
+	
+	private static ReadersManager readersManager;
 	
 	private LinkedList<IDReader> readers;
 	
@@ -32,18 +34,67 @@ public class ReadersManager implements IDReadersManager {
 	private IDReader[] readersArray = { (new NfcReaderSkeleton()) };
 	
 	
+	// disable the initialization of the class
+	private ReadersManager(){
+
+	}
+	
+	
+	/*
+	 * singleton, only one instance of ReadersManager
+	 */
+	static public ReadersManager getReadersManager(){
+		
+		if(readersManager == null){
+			
+			__initReadersManager();
+		}
+		
+		return readersManager;
+		
+	}
+	
+	synchronized private static ReadersManager __initReadersManager(){
+		
+		if( readersManager == null){
+			
+			readersManager = new ReadersManager();
+			readersManager.initReadersManager();
+		}
+		
+		return readersManager;
+	}
+	
+	static public void terminateReadersManager(){
+		
+		if(readersManager != null){
+			
+			__terminateReadersManager();
+		}
+	}
+	
+	synchronized private static void __terminateReadersManager() {
+
+		if(readersManager != null){
+			
+			readersManager.releaseReadersManager();
+			readersManager = null;
+		}
+		
+	}
+
 	
 	/* (non-Javadoc)
 	 * @see com.ptv.Reader.IDReaderManager#initReaderManager()
 	 */
-	public int initReadersManager() {
+	private int initReadersManager() {
 		
 		// init 
 		readers = new LinkedList<IDReader>( Arrays.asList(readersArray) );
 		
-		int ret = initReaders();
+		int ret = initReaders(readers);
 		
-		logger.info( "The {} init done! ", this.getClass().getName() );
+		logger.info( "The {} init done!", this.getClass().getSimpleName() );
 		
 		return ret;
 	}
@@ -51,7 +102,7 @@ public class ReadersManager implements IDReadersManager {
 	/* (non-Javadoc)
 	 * @see com.ptv.Reader.IDReaderManager#releaseReaderManager()
 	 */
-	public void releaseReadersManager() {
+	private void releaseReadersManager() {
 
 		releaseReaders();
 		
@@ -62,7 +113,7 @@ public class ReadersManager implements IDReadersManager {
 	/* 
 	 * init all the readers record in the 
 	 */
-	private int initReaders() {
+	private int initReaders( LinkedList<IDReader> readers) {
 		
 		// init all readers
 		ListIterator<IDReader> iter = readers.listIterator();
@@ -75,6 +126,8 @@ public class ReadersManager implements IDReadersManager {
 			
 			if( rs == ReaderState.WORKER_ALIVE ){
 				logger.info( "The reader worker init success for reader \"{}\"", reader.getReaderName() );
+			} else {
+				logger.error( "The reader worker init failed for reader \"{}\"", reader.getReaderName() );
 			}
 			
 		}
