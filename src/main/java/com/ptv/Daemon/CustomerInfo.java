@@ -3,70 +3,87 @@
  */
 package com.ptv.Daemon;
 
+import java.io.Serializable;
 import java.text.SimpleDateFormat;
 import java.util.Date;
+import java.util.Random;
 import java.util.UUID;
+
+import com.ptv.Geolocation.Location;
 
 /**
  * @author Vis.Lee
  * customer information,
  */
-public class CustomerInfo {
+public class CustomerInfo implements Serializable {
 
-	private long userID;
+	private static final long serialVersionUID = 480515743781027706L;
+
+	private long userID = 0;
+	
 	//private LinkedList<Long> cardID;
 	private UUID cardID;
-	private String region;
-	private String location;
-	private long lastTimeStamp;
+
+	private Location location;
+	
+	// time stamp for last update time
+	private long lastTimeStamp = 0;
 	
 	
+	
+	
+	public CustomerInfo(long userID) {
+		this.userID = userID;
+	}
+
 	public CustomerInfo(UUID cardId) {
 		
 		this.cardID = cardId;
+		setLastTimeStamp(System.currentTimeMillis());
 	}
+	
+	
 	/**
 	 * @return the cardID
 	 */
 	public UUID getCardID() {
 		return cardID;
 	}
+	
+	
 	/**
 	 * @param cardID the cardID to set
 	 */
 	public void setCardID(UUID cardID) {
 		this.cardID = cardID;
+		setLastTimeStamp(System.currentTimeMillis());
 	}
-	/**
-	 * @return the region
-	 */
-	public String getRegion() {
-		return region;
-	}
-	/**
-	 * @param region the region to set
-	 */
-	public void setRegion(String region) {
-		this.region = region;
-	}
+	
+	
 	/**
 	 * @return the location
 	 */
-	public String getLocation() {
+	public Location getLocation() {
 		return location;
 	}
 	/**
 	 * @param location the location to set
 	 */
-	public void setLocation(String location) {
+	public void setLocation(Location location) {
 		this.location = location;
+		setLastTimeStamp(System.currentTimeMillis());
 	}
+	
+	
+	
 	/**
 	 * @return the lastTimeStamp
 	 */
 	public long getLastTimeStamp() {
 		return lastTimeStamp;
 	}
+	
+	
 	/**
 	 * @param lastTimeStamp the lastTimeStamp to set
 	 */
@@ -77,7 +94,7 @@ public class CustomerInfo {
 	
 	public String getLastTimeStampInDateString(){
 		
-		Date date = new Date(lastTimeStamp * 1000);
+		Date date = new Date(lastTimeStamp);
 		
 		SimpleDateFormat sdate = new SimpleDateFormat();
 		
@@ -85,14 +102,54 @@ public class CustomerInfo {
 		
 	}
 	
+	
+	static public CustomerInfo genDummyCustomerInfo(){
+		
+		Random rn = new Random();
+		CustomerInfo ci = new CustomerInfo( rn.nextLong() );
+		ci.setCardID(new UUID( (1L << 64), rn.nextLong()));
+		ci.setLocation(Location.getDummyLocation());
+		
+		return ci;
+		
+	}
+	
+	static public CustomerInfo genDummyCustomerInfo(UUID uid){
+		
+		Random rn = new Random();
+		CustomerInfo ci = new CustomerInfo( rn.nextLong() );
+		ci.setCardID( uid );
+		ci.setLocation(Location.getDummyLocation());
+		
+		return ci;
+		
+	}
+	
+	/*
+	 * FIXME need to complete it
+	 */
+	public int update(CustomerInfo ci){
+		
+		int retcode = PtvConstant.SUCCESS;
+		
+		setLastTimeStamp(System.currentTimeMillis());
+		
+		return retcode;
+		
+	}
+	
+	
 	/* (non-Javadoc)
 	 * @see java.lang.Object#toString()
 	 */
 	@Override
 	public String toString() {
 		
-		return String.format( "userID = {}, cardID = {}, region = {}, location = {}, TimeStamp = {}",
-				               userID, cardID, region, location, getLastTimeStampInDateString() );
+		return String.format( "userID = %d, cardID = %s, location = %s, TimeStamp = %d, in Date = %s",
+				               userID, (cardID != null) ? cardID.toString() : "no cardID", 
+				            	(location != null) ? location : "unknow", 
+				            	getLastTimeStamp(),
+				            	getLastTimeStampInDateString() );
 		
 	}
 	

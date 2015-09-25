@@ -12,5 +12,6 @@ public interface PtvConstant {
 
 	static public int SUCCESS = 0;
 	
-	
+	static public final int UUID_LENGTH = 32;
+
 }

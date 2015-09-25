@@ -4,6 +4,9 @@
 package com.ptv.Daemon;
 
 import java.util.ArrayList;
+import java.util.UUID;
+
+import com.ptv.Geolocation.Location;
 
 /**
  * @author Vis.Lee
@@ -12,10 +15,13 @@ import java.util.ArrayList;
 public class StoreInfo {
 	
 	// read from conf file
-	private int ID;
+	private UUID id;
+	private int countryCode;
+	private String CountryName;
+	private Location location;
 	private String address;
 	private String phoneNumber;
 	
-	private ArrayList<DisplayInfo> tvs;
+	private ArrayList<DisplayInfo> displays;
 	
 }
