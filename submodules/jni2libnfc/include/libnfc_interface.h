@@ -19,6 +19,9 @@ int open_nfc_reader(void);
 void close_nfc_reader(void);
 
 char * get_reader_name(void);
+int get_device_last_error();
+const char * get_nfc_strerror();
+
 char * start_polling(void);
 void stop_polling(int sig);
 

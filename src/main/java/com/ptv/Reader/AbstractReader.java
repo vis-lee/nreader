@@ -82,7 +82,7 @@ public abstract class AbstractReader extends Thread implements IDReader, IDReade
 						
 					} catch (Exception e) {
 						
-						logger.error(e.getMessage());
+						logger.error(e.getMessage(), e);
 					}
 					
 				} else { // if( getReaderState() == ReaderState.DEV_UP )
@@ -157,7 +157,7 @@ public abstract class AbstractReader extends Thread implements IDReader, IDReade
 				
 				if(logger.isDebugEnabled()){
 					
-					logger.debug( e.getStackTrace() );
+					logger.debug( e.getStackTrace(), e );
 				}
 				
 				if (Thread.interrupted()){
@@ -226,19 +226,18 @@ public abstract class AbstractReader extends Thread implements IDReader, IDReade
 				if( getReaderState() == ReaderState.DEV_DOWN ){
 				
 					// TODO if the device isn't up, clear my state
-					logger.warn("received interrupt and DEV_DOWN. Trying to init device again!");
+					logger.warn("received interrupt and DEV_DOWN. Trying to init device again!", e);
 				}
 				
 				// interrupted by dispose function
 				if( alive == ReaderState.WORKER_DOWN ){
 					
-					logger.debug("received interrupt and WORKER_DOWN, shoule be called from dispose function!");
+					logger.debug("received interrupt and WORKER_DOWN, shoule be called from dispose function!", e);
 				}
 				
 			}
 			
-			logger.error(e.getMessage());
-			logger.debug(e.getStackTrace());
+			logger.error(e.getMessage(), e);
 		}
 	}
 	
@@ -296,7 +295,7 @@ public abstract class AbstractReader extends Thread implements IDReader, IDReade
 			
 		} catch (Exception e) {
 			
-			logger.debug( e.getMessage() );
+			logger.debug( e.getMessage(), e );
 		}
 		
 	}

@@ -3,12 +3,12 @@
  */
 package com.ptv.Reader.NFC;
 
+import java.util.UUID;
 import java.util.concurrent.TimeUnit;
 
 import org.apache.logging.log4j.LogManager;
 import org.apache.logging.log4j.Logger;
 
-import com.ptv.Daemon.CustomerInfo;
 import com.ptv.Reader.IDReader;
 import com.ptv.Reader.ReaderState;
 
@@ -20,7 +20,7 @@ import junit.framework.TestCase;
  */
 public class TestIDReader extends TestCase {
 
-	private static final Logger logger = LogManager.getLogger();
+	private static final Logger logger = LogManager.getLogger(TestIDReader.class.getName());
 	
 	public void testIDReaderFunc(){
 		
@@ -36,21 +36,23 @@ public class TestIDReader extends TestCase {
 			return;
 		}
 
-		CustomerInfo ci = null;
+		UUID uid = null;
 		
-		while( ci == null ){
+		while( (uid == null) || true ){
 			
-			ci = reader.readID();
+			uid = reader.readID();
 			
-			if(ci == null){
+			if(uid == null){
 				try {
 					TimeUnit.SECONDS.sleep(1);
+					
 				} catch (InterruptedException e) {
-					// TODO Auto-generated catch block
-					e.printStackTrace();
+					
+					System.out.println( ((NfcReaderSkeleton) reader).getReaderState().toString() );
+					
 				}
 			} else {
-				logger.info(ci.toString());
+				logger.info(uid.toString());
 			}
 		}
 		

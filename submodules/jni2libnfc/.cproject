@@ -38,10 +38,10 @@
 									<listOptionValue builtIn="false" value="&quot;C:\TDM-GCC-64\include&quot;"/>
 									<listOptionValue builtIn="false" value="&quot;C:\Program Files\Java\jdk1.8.0_51\include&quot;"/>
 									<listOptionValue builtIn="false" value="&quot;C:\Program Files\Java\jdk1.8.0_51\include\win32&quot;"/>
-									<listOptionValue builtIn="false" value="&quot;C:\projects\libnfc\include&quot;"/>
-									<listOptionValue builtIn="false" value="&quot;C:\projects\libnfc\contrib\win32&quot;"/>
-									<listOptionValue builtIn="false" value="&quot;C:\projects\libnfc\utils&quot;"/>
 									<listOptionValue builtIn="false" value="&quot;${workspace_loc:/PtvJni2Nfc/include}&quot;"/>
+									<listOptionValue builtIn="false" value="&quot;C:\projects\libnfc_src\include&quot;"/>
+									<listOptionValue builtIn="false" value="&quot;C:\projects\libnfc_src\contrib\win32&quot;"/>
+									<listOptionValue builtIn="false" value="&quot;C:\projects\libnfc_src\utils&quot;"/>
 								</option>
 								<option id="gnu.c.compiler.option.dialect.std.1448253431" name="Language standard" superClass="gnu.c.compiler.option.dialect.std" value="gnu.c.compiler.dialect.default" valueType="enumerated"/>
 								<option id="gnu.c.compiler.option.misc.other.1719909324" name="Other flags" superClass="gnu.c.compiler.option.misc.other" value="-c -fmessage-length=0 -m32 " valueType="string"/>
@@ -141,23 +141,26 @@
 			<resource resourceType="PROJECT" workspacePath="/jni2nfc"/>
 		</configuration>
 	</storageModule>
+	<storageModule moduleId="org.eclipse.cdt.internal.ui.text.commentOwnerProjectMappings"/>
 	<storageModule moduleId="scannerConfiguration">
 		<autodiscovery enabled="true" problemReportingEnabled="true" selectedProfileId=""/>
-		<scannerConfigBuildInfo instanceId="cdt.managedbuild.config.gnu.cross.so.release.277581422;cdt.managedbuild.config.gnu.cross.so.release.277581422.;cdt.managedbuild.tool.gnu.cross.c.compiler.755080296;cdt.managedbuild.tool.gnu.c.compiler.input.1527692477">
-			<autodiscovery enabled="true" problemReportingEnabled="true" selectedProfileId=""/>
-		</scannerConfigBuildInfo>
-		<scannerConfigBuildInfo instanceId="cdt.managedbuild.config.gnu.cross.so.debug.1550336287;cdt.managedbuild.config.gnu.cross.so.debug.1550336287.;cdt.managedbuild.tool.gnu.c.compiler.mingw.base.771177725;cdt.managedbuild.tool.gnu.c.compiler.input.1649607629">
-			<autodiscovery enabled="true" problemReportingEnabled="true" selectedProfileId=""/>
-		</scannerConfigBuildInfo>
 		<scannerConfigBuildInfo instanceId="cdt.managedbuild.config.gnu.cross.so.debug.1550336287;cdt.managedbuild.config.gnu.cross.so.debug.1550336287.;cdt.managedbuild.tool.gnu.cross.c.compiler.1415043431;cdt.managedbuild.tool.gnu.c.compiler.input.2060611656">
 			<autodiscovery enabled="true" problemReportingEnabled="true" selectedProfileId=""/>
 		</scannerConfigBuildInfo>
 		<scannerConfigBuildInfo instanceId="cdt.managedbuild.config.gnu.cross.so.release.1272927101;cdt.managedbuild.config.gnu.cross.so.release.1272927101.;cdt.managedbuild.tool.gnu.cross.c.compiler.1755961662;cdt.managedbuild.tool.gnu.c.compiler.input.1062780209">
 			<autodiscovery enabled="true" problemReportingEnabled="true" selectedProfileId=""/>
 		</scannerConfigBuildInfo>
+		<scannerConfigBuildInfo instanceId="cdt.managedbuild.config.gnu.cross.so.release.277581422;cdt.managedbuild.config.gnu.cross.so.release.277581422.;cdt.managedbuild.tool.gnu.c.compiler.mingw.base.905943080;cdt.managedbuild.tool.gnu.c.compiler.input.1815064973">
+			<autodiscovery enabled="true" problemReportingEnabled="true" selectedProfileId=""/>
+		</scannerConfigBuildInfo>
+		<scannerConfigBuildInfo instanceId="cdt.managedbuild.config.gnu.cross.so.release.277581422;cdt.managedbuild.config.gnu.cross.so.release.277581422.;cdt.managedbuild.tool.gnu.cross.c.compiler.755080296;cdt.managedbuild.tool.gnu.c.compiler.input.1527692477">
+			<autodiscovery enabled="true" problemReportingEnabled="true" selectedProfileId=""/>
+		</scannerConfigBuildInfo>
 		<scannerConfigBuildInfo instanceId="cdt.managedbuild.config.gnu.cross.so.debug.1599768514;cdt.managedbuild.config.gnu.cross.so.debug.1599768514.;cdt.managedbuild.tool.gnu.cross.c.compiler.1022882317;cdt.managedbuild.tool.gnu.c.compiler.input.1040241679">
 			<autodiscovery enabled="true" problemReportingEnabled="true" selectedProfileId=""/>
 		</scannerConfigBuildInfo>
+		<scannerConfigBuildInfo instanceId="cdt.managedbuild.config.gnu.cross.so.debug.1550336287;cdt.managedbuild.config.gnu.cross.so.debug.1550336287.;cdt.managedbuild.tool.gnu.c.compiler.mingw.base.771177725;cdt.managedbuild.tool.gnu.c.compiler.input.1649607629">
+			<autodiscovery enabled="true" problemReportingEnabled="true" selectedProfileId=""/>
+		</scannerConfigBuildInfo>
 	</storageModule>
-	<storageModule moduleId="org.eclipse.cdt.internal.ui.text.commentOwnerProjectMappings"/>
 </cproject>

@@ -3,7 +3,11 @@
  */
 package com.ptv.Reader.NFC;
 
+import org.apache.logging.log4j.LogManager;
+import org.apache.logging.log4j.Logger;
+
 import com.ptv.Reader.AbstractReader;
+import com.ptv.Reader.ReaderRemovedException;
 import com.ptv.Reader.ReaderState;
 
 /**
@@ -13,6 +17,8 @@ import com.ptv.Reader.ReaderState;
  */
 public class NfcReaderSkeleton extends AbstractReader {
 
+	private static final Logger logger = LogManager.getLogger( AbstractReader.class.getName() );
+	
 	protected ReaderState devState = ReaderState.DEV_DOWN;
 	
 	// default reader name, nfc.
@@ -144,52 +150,57 @@ public class NfcReaderSkeleton extends AbstractReader {
 			
 		} catch (InterruptedException e) {
 			
-			if( Thread.interrupted() ){
-				
-				// TODO check the nfc device state
-				logger.error("interrupt catched!!");
-				logger.error( e.getMessage() );
-			}
+			logger.error("interrupt catched!!", e);
 			
-			// throw new InterruptedException("NFC Device un-plugged!");
+			throw e;
+			
+		} catch ( ReaderRemovedException e ) {
+			
+			// set DEV_DOWN
+			setDevState(ReaderState.DEV_DOWN);
+			logger.error("NFC Device un-plugged!", e);
 			throw e;
 		}
 		
 		return id;
 	}
 
+	/*
+	 * the HAL used libnfc which return the following result:
+	 *   ISO/IEC 14443A (106 kbps) target:
+	 *   ATQA (SENS_RES): 00  04
+	 *   UID (NFCID1): 6a  2b  cb  35
+	 *   SAK (SEL_RES): 08
+	 */
 	private String parseNfcResult(String result) {
-		/*
-		 * the HAL used libnfc which return the following result:
-		 *   ISO/IEC 14443A (106 kbps) target:
-		 *   ATQA (SENS_RES): 00  04
-		 *   UID (NFCID1): 6a  2b  cb  35
-		 *   SAK (SEL_RES): 08
-		 */
-		logger.debug("detect card: \n {}", result.toString());
-
-		String regex = new String("[:\n]");
-		String[] strs = result.split(regex);
+		
 		String extract = null;
 		
-		// find where the UID is
-		for(int i = 0; i < strs.length; i++) {
+		if (result != null){
+
+			String regex = new String("[:\n]");
+			String[] strs = result.split(regex);
 			
-			if(strs[i].contains("UID")){
+			logger.debug("detect card: \n {}", result.toString());
+			// find where the UID is
+			for(int i = 0; i < strs.length; i++) {
 				
-				// we want the string followed UID
-				extract = strs[i+1];
-				
-				// replace the whitespace and \n 
-				extract = extract.replaceAll("\\s+", "");
-				
-				break;
+				if(strs[i].contains("UID")){
+					
+					// we want the string followed UID
+					extract = strs[i+1];
+					
+					// replace the whitespace and \n 
+					extract = extract.replaceAll("\\s+", "");
+					
+					break;
+				}
 			}
-			
-		};
+		}
 		
 		return extract;
 	}
+	
 
 	@Override
 	public ReaderState getReaderState() {

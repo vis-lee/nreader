@@ -115,6 +115,8 @@ void stop_polling(int sig) {
 	} else {
 		ERR("received interrupt signal! BUT pnd is NULL!");
 	}
+
+	printf("%s, %d, signal is triggered!", __func__, __LINE__);
 }
 
 /*
@@ -126,6 +128,25 @@ char * show_nfc_target(const nfc_target *pnt, bool verbose) {
 	str_nfc_target(&s, pnt, verbose);
 	DBG("%s", s);
 	return s;
+}
+
+
+int get_device_last_error(){
+
+	int ret_code = 0;
+
+	if(g_pnd != NULL){
+
+		ret_code = nfc_device_get_last_error(g_pnd);
+
+	}
+
+	return ret_code;
+}
+
+const char * get_nfc_strerror(){
+
+	return (g_pnd != NULL) ? nfc_strerror(g_pnd) : "UNKNOWN";
 }
 
 /*
@@ -161,7 +182,7 @@ int open_nfc_reader(void) {
 
 		if (g_pnd == NULL) {
 			ERR("%s", "Unable to open NFC device.");
-			// we don't need to release context if there are no nfc devices
+			// we don't need to release context if there is no nfc devices
 			// nfc_exit(g_context);
 			// g_context = NULL;
 			return NFC_ENOTSUCHDEV;
@@ -230,18 +251,24 @@ char * start_polling(void) {
 
 	if ((res = nfc_initiator_poll_target(g_pnd, nmModulations, szModulations, uiPollNr, uiPeriod, &nt)) < 0) {
 		nfc_perror(g_pnd, "nfc_initiator_poll_target");
+		printf("%s, %d, return code = %d", __func__, __LINE__, res);
 	}
 
 	if (res > 0) {
 		target = show_nfc_target(&nt, verbose);
+
+		printf("Waiting for card removing...");
+		while (0 == nfc_initiator_target_is_present(g_pnd, NULL)) {}
+
 	} else {
 		printf("No target found.\n");
 	}
 
-	//printf("Waiting for card removing...");
-	while (0 == nfc_initiator_target_is_present(g_pnd, NULL)) {}
-	nfc_perror(g_pnd, "nfc_initiator_target_is_present");
+	printf(g_pnd, "nfc_initiator_target_is_present");
 
 	return target;
 
 }
+
+
+
