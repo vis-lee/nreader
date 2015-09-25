@@ -1,6 +1,6 @@
 package com.ptv.Reader;
 
-import com.ptv.Daemon.CustomerInfo;
+import java.util.UUID;
 
 /**
  * The IDReader is a middle layer for unify the APIs for the all kinds of the readers,
@@ -24,7 +24,7 @@ public interface IDReader {
 	/*
 	 * read ID from sync-queue
 	 */
-	public CustomerInfo readID();
+	public UUID readID();
 	
 	/*
 	 * @return ReaderName

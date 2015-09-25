@@ -10,7 +10,8 @@ import java.util.concurrent.TimeUnit;
 import org.apache.logging.log4j.LogManager;
 import org.apache.logging.log4j.Logger;
 
-import com.ptv.Daemon.CustomerInfo;
+import com.ptv.Daemon.PtvConstant;
+import com.ptv.Daemon.PtvDaemonOperations.OperationsEnum;
 
 /**
  * @author Vis.Lee
@@ -26,7 +27,8 @@ public abstract class AbstractReader extends Thread implements IDReader, IDReade
 	
 	protected static final Logger logger = LogManager.getLogger( AbstractReader.class.getName() );
 	
-	public final static long CONSUMER_POLL_TIME = 1;  // second
+	public final static long CONSUMER_POLL_TIME = 1;  // m second
+	public final static long PRODUCER_WAIT_TIME = 1;  // minute
 	
 	public final static long WAIT_TIMER = 3; //seconds
 
@@ -105,10 +107,10 @@ public abstract class AbstractReader extends Thread implements IDReader, IDReade
 		
 		UUID uid = null;
 
-		if( idStr.length() < CustomerInfo.UUID_LENGTH ){
+		if( idStr.length() < PtvConstant.UUID_LENGTH ){
 			
 			// completed with 0
-			char[] trans = new char[CustomerInfo.UUID_LENGTH-idStr.length()];
+			char[] trans = new char[PtvConstant.UUID_LENGTH-idStr.length()];
 			Arrays.fill(trans, '0');
 			
 			String s = new String(trans);
@@ -208,10 +210,12 @@ public abstract class AbstractReader extends Thread implements IDReader, IDReade
 			
 			if( idStr != null){
 				
-				CustomerInfo ci = new CustomerInfo( alignToUUID(idStr) );
-
+				UUID uid = alignToUUID(idStr);
+				
+				// TODO add operation field
+				OperationsEnum op = OperationsEnum.ShowPage;
 				// 3. return the cardID to broker
-				broker.offer(ci);
+				broker.offer(uid);
 				
 			} else {
 				logger.error("catched NULL UID!");
@@ -244,8 +248,12 @@ public abstract class AbstractReader extends Thread implements IDReader, IDReade
 	/*
 	 * 3. provide "read" interface of IDReader for the caller 
 	 */
-	public CustomerInfo readID() {
+	public UUID readID() {
 		
+		/* TODO we need to add :
+		 * 1. time stamp 
+		 * 2. needed operations, ex: present page, show vedio
+		 */
 		// read ID from broker
 		return broker.poll(CONSUMER_POLL_TIME, TimeUnit.MILLISECONDS);
 		// return broker.poll();

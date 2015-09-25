@@ -3,6 +3,7 @@
  */
 package com.ptv.Reader;
 
+import java.util.UUID;
 import java.util.concurrent.SynchronousQueue;
 import java.util.concurrent.TimeUnit;
 
@@ -25,22 +26,29 @@ public class SynchronousBroker {
 	 * The producer would wait until the consumer took the request from it.
 	 * So, SynchronousQueue doesn't have any capacity, it's a hand over class. 
 	 */
-	public SynchronousQueue<CustomerInfo> queue;
+	public SynchronousQueue<UUID> queue;
 
 	
 	public SynchronousBroker(){
-		this.queue = new SynchronousQueue<CustomerInfo>();
+		this.queue = new SynchronousQueue<UUID>();
 	}
 	
 	
-	public boolean offer(CustomerInfo ci){
+	public boolean offer(UUID uid){
 		
-		logger.debug( "thread = {}, offer ID = {} to broker", Thread.currentThread().getName(), ci.getCardID() );
-		return this.queue.offer(ci);
+		logger.debug( "thread = {}, offer ID = {} to broker", Thread.currentThread().getName(), uid );
+		return this.queue.offer(uid);
 		
 	}
 	
-	public CustomerInfo poll(){
+	public boolean offer(UUID uid, long producerWaitTime, TimeUnit tu){
+		
+		logger.debug( "thread = {}, offer ID = {} to broker with timer set to {} {} ", Thread.currentThread().getName(), uid, producerWaitTime, tu.toString() );
+		return this.queue.offer(uid);
+		
+	}
+	
+	public UUID poll(){
 		
 		logger.debug( "thread = {}, poll from broker ", Thread.currentThread().getName() );
 		return this.queue.poll();
@@ -48,11 +56,11 @@ public class SynchronousBroker {
 	}
 
 
-	public CustomerInfo poll(long consumerPollTime, TimeUnit tu) {
+	public UUID poll(long consumerPollTime, TimeUnit tu) {
 
 		try {
 			
-			logger.debug( "thread = {}, poll from broker with timer set to {} seconds ", Thread.currentThread().getName(), consumerPollTime );
+			logger.debug( "thread = {}, poll from broker with timer set to {} {} ", Thread.currentThread().getName(), consumerPollTime, tu.toString() );
 			return this.queue.poll(consumerPollTime, tu);
 			
 		} catch (InterruptedException e) {

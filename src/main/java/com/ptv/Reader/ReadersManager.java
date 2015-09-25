@@ -6,11 +6,11 @@ package com.ptv.Reader;
 import java.util.Arrays;
 import java.util.LinkedList;
 import java.util.ListIterator;
+import java.util.UUID;
 
 import org.apache.logging.log4j.LogManager;
 import org.apache.logging.log4j.Logger;
 
-import com.ptv.Daemon.CustomerInfo;
 import com.ptv.Daemon.PtvConstant;
 import com.ptv.Reader.NFC.NfcReaderSkeleton;
 
@@ -180,22 +180,22 @@ public class ReadersManager {
 	/* (non-Javadoc)
 	 * @see com.ptv.Reader.IDReaderManager#pollingAllReaders()
 	 */
-	public LinkedList<CustomerInfo> pollingAllReaders() {
+	public LinkedList<UUID> pollingAllReaders() {
 		
 		ListIterator<IDReader> iter = readers.listIterator();
-		LinkedList<CustomerInfo> ids = new LinkedList<CustomerInfo>();
+		LinkedList<UUID> ids = new LinkedList<UUID>();
 		
 		while(iter.hasNext()){
 			
 			IDReader reader = iter.next();
-			CustomerInfo ci = reader.readID();
+			UUID uid = reader.readID();
 			
-			if( ci != null ){
+			if( uid != null ){
 				
-				logger.debug( ci.toString() );
+				logger.debug( uid.toString() );
 				
-				// XXX should we return a list of ID? kind of weird
-				ids.add(ci);
+				// XXX should we return a list of ID? 
+				ids.add(uid);
 			}
 		}
 		
