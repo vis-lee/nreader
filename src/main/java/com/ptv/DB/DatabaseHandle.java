@@ -18,7 +18,7 @@ import com.ptv.Geolocation.Location;
  * @author Vis.Lee
  *
  */
-// TODO need to remove the singleton pattern, db should can be connect to multiple servers
+// TODO need to remove the singleton pattern, db could be connect to multiple servers
 public class DatabaseHandle implements DatabaseConstant {
 
 	private static final Logger logger = LogManager.getLogger(DatabaseHandle.class.getName());
@@ -102,7 +102,7 @@ public class DatabaseHandle implements DatabaseConstant {
 				
 			} finally {
 				
-				if(!rs.isClosed()){
+				if( (rs != null) && (!rs.isClosed()) ){
 					rs.close();
 				}
 	        }
@@ -169,8 +169,9 @@ public class DatabaseHandle implements DatabaseConstant {
 				
 				// XXX insert customer info? or do nothing.
 				// FIXME this is temporary sentence for PoC, need to be removed later
-				writeCustomerInfo( CustomerInfo.genDummyCustomerInfo(uid) );
-				logger.warn("we didn't find out the related card ID {}, so we insert a dummy ci with the card ID", uid);
+				ci = CustomerInfo.genDummyCustomerInfo(uid);
+				writeCustomerInfo( ci );
+				logger.warn("we didn't find out the related card ID {}, so we insert a dummy ci as \n {}", uid, ci);
 			}
 			
 		} catch (SQLException e) {
@@ -219,7 +220,7 @@ public class DatabaseHandle implements DatabaseConstant {
 		// FIXME userID should bind with CRM or have some kind of rules to generate rather via random
 		pstmt.setLong(1, rn.nextLong());
 		pstmt.setString(2, customerInfo.getCardID().toString());
-		pstmt.setString(3, com.ptv.Geolocation.Location.PTV_REGION);
+		pstmt.setString(3, customerInfo.getLocation().getRegion());
 		pstmt.setDouble(4, customerInfo.getLocation().getLongitude());
 		pstmt.setDouble(5, customerInfo.getLocation().getLatitude());
 		pstmt.setLong(6, customerInfo.getLastTimeStamp());

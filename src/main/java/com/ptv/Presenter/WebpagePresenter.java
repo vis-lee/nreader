@@ -40,7 +40,6 @@ public class WebpagePresenter implements IPresenter {
 		
 		int retcode = PtvConstant.SUCCESS;
 		String urlString = "";
-//		BrowserLauncher launcher = new BrowserLauncher();
 		
 		if( isBrowserLauncher() ){
 			
@@ -54,9 +53,6 @@ public class WebpagePresenter implements IPresenter {
 			
 			retcode = -1;
 		}
-		
-//		BrowserLauncherErrorHandler errorHandler = new BrowserLauncherErrorHandlerImpl();
-//		BrowserLauncherRunner runner = new BrowserLauncherRunner(launcher, urlString, errorHandler);
 		
 		return retcode;
 	}
@@ -96,6 +92,12 @@ public class WebpagePresenter implements IPresenter {
 		
 		return str;
 		
+	}
+
+	@Override
+	public int stopPresentation(CustomerInfo ci) throws Exception {
+		// FIXME not support now
+		return 0;
 	}
 
 }

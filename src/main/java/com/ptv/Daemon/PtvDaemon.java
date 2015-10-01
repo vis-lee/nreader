@@ -115,15 +115,8 @@ public class PtvDaemon
     	
     	while(ptvDaemon.getPtvDaemonState()){
     		
-    		//TODO main loop routines
+    		// main loop routines
     		ptvDaemon.doDaemonRoutines();
-    		
-    		try {
-				Thread.currentThread().sleep(10);
-			} catch (InterruptedException e) {
-				// TODO Auto-generated catch block
-				e.printStackTrace();
-			}
     		
     		
     	}

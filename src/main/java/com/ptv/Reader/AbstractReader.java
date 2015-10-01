@@ -27,8 +27,8 @@ public abstract class AbstractReader extends Thread implements IDReader, IDReade
 	
 	protected static final Logger logger = LogManager.getLogger( AbstractReader.class.getName() );
 	
-	public final static long CONSUMER_POLL_TIME = 1;  // m second
-	public final static long PRODUCER_WAIT_TIME = 1;  // minute
+	public final static long CONSUMER_POLL_TIME = 10;  // m second
+	public final static long PRODUCER_WAIT_TIME = 1;   // reader worker would wait ptv daemon for PRODUCER_WAIT_TIME minutes
 	
 	public final static long WAIT_TIMER = 3; //seconds
 
@@ -250,9 +250,9 @@ public abstract class AbstractReader extends Thread implements IDReader, IDReade
 	 */
 	public UUID readID() {
 		
-		/* TODO we need to add :
+		/* TODO after PoC, we need to add :
 		 * 1. time stamp 
-		 * 2. needed operations, ex: present page, show vedio
+		 * 2. needed operations, ex: present page, show video
 		 */
 		// read ID from broker
 		return broker.poll(CONSUMER_POLL_TIME, TimeUnit.MILLISECONDS);

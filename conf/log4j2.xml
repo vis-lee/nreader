@@ -7,6 +7,9 @@
         <Console name="console-log" target="SYSTEM_OUT">
             <PatternLayout pattern="[%-5level] %d{yyyy-MM-dd HH:mm:ss.SSS} [%t] %c{1} - %msg%n"/>
         </Console>
+        <Console name="console-err" target="SYSTEM_ERR">
+            <PatternLayout pattern="[%-5level] %d{yyyy-MM-dd HH:mm:ss.SSS} [%t] %c{1} - %msg%n"/>
+        </Console>
         <RollingFile name="trace-log" fileName="${log-path}/ptv-nfc-trace.log"
                      filePattern="${log-path}/ptv-nfc-trace-%d{yyyy-MM-dd}-%i.log.gz">
             <PatternLayout>
@@ -36,10 +39,17 @@
             <appender-ref ref="error-log" level="error"/>
             <appender-ref ref="console-log" level="debug"/>
         </Logger>
+        <!-- <Root level="debug" additivity="false">
+            <AppenderRef ref="console-log" level="debug"/>
+            <AppenderRef ref="console-err" level="error"/>
+            <AppenderRef ref="trace-log" level="debug"/>
+            <AppenderRef ref="error-log" level="info"/>
+        </Root> -->
         <Root level="info" additivity="false">
-            <AppenderRef ref="console-log"/>
-            <AppenderRef ref="trace-log"/>
-            <AppenderRef ref="error-log"/>
+            <AppenderRef ref="console-log" />
+            <AppenderRef ref="console-err" />
+            <AppenderRef ref="trace-log" />
+            <AppenderRef ref="error-log" />
         </Root>
     </Loggers>
 </Configuration>

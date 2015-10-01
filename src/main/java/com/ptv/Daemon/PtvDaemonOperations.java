@@ -9,9 +9,11 @@ import org.apache.logging.log4j.LogManager;
 import org.apache.logging.log4j.Logger;
 
 import com.ptv.DB.DatabaseHandle;
+import com.ptv.Presenter.IPresenter;
+import com.ptv.Presenter.WebpagePresenter;
 import com.ptv.Reader.ReadersManager;
 
-public class PtvDaemonOperations {
+public class PtvDaemonOperations implements PtvConstant{
 	
 	private static final Logger logger = LogManager.getLogger(PtvDaemon.class.getName());
 	
@@ -19,11 +21,13 @@ public class PtvDaemonOperations {
 	protected DatabaseHandle dbhandle;
     
 	private PtvDaemon ptvDaemon = null;
+	private IPresenter presenter = null;
 	
 	
 	public PtvDaemonOperations(PtvDaemon ptvDaemon) {
 		
 		this.ptvDaemon = ptvDaemon;
+		this.presenter = WebpagePresenter.getPresenter();
 	}
 
 
@@ -48,7 +52,7 @@ public class PtvDaemonOperations {
 		// id operations
 		LinkedList<UUID> ids = readersManager.pollingAllReaders();
 		
-		// TODO DB operations
+		// DB operations
 		CustomerInfo ci = null;
 		
 		try {
@@ -60,11 +64,11 @@ public class PtvDaemonOperations {
 				ci = dbhandle.readCustomerInfo(uid);
 				
 				// TODO perform operations by operationEnum
-				Presentations.ShowPage(ci);
+				presenter.showPresentation(ci);
 				
 			}
 			
-		} catch (SQLException e) {
+		} catch (Exception e) {
 			
 			logger.error("getCustomerInfoFromDataBase exception!");
 		}
@@ -97,15 +101,29 @@ public class PtvDaemonOperations {
 
 	public int initOperations() {
 		
-		// TODO init rest
+		// init all components
 		try {
 			dbhandle = DatabaseHandle.getDatabaseHandle();
 		} catch (SQLException e) {
-			logger.error("can't get init Database connection fail!", e);
+			logger.error("initOperations : ERR_SQL_CONN", e);
+			return ERR_SQL_CONN;
+		}
+		
+		// get presenter TODO should implement a operator class to management all kinds of the presenters
+		presenter = WebpagePresenter.getPresenter();
+		
+		if(presenter == null){
+			logger.error("initOperations : ERR_GET_PRESENTER");
+			return ERR_GET_PRESENTER;
 		}
 		
 		// init reader manager
 		readersManager = ReadersManager.getReadersManager();
+		
+		if( readersManager == null ){
+			logger.error("initOperations : ERR_INIT_READERS ");
+			return ERR_INIT_REDERS;
+		}
 		
 		return 0;
 	}
@@ -114,11 +132,16 @@ public class PtvDaemonOperations {
 	
 		// run the shutdown hooks
 		// 1. shutdown the reader manager
+		logger.info(" terminating the readers ");
 		ReadersManager.terminateReadersManager();
 		
-		// TODO 2. close the db manager
+		// 2. terminate the presenter
+		logger.info(" terminating the webpager ");
+		presenter.terminate();
+		
+		// 3. close the db manager
+		logger.info(" terminating the db ");
 		dbhandle.releaseConnection();
-		// TODO 3. terminate the presenter
 		
 		// ALL end
 		logger.info(" ptv operations exit! ");
