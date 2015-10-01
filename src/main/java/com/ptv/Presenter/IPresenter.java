@@ -3,6 +3,8 @@
  */
 package com.ptv.Presenter;
 
+import com.ptv.Daemon.CustomerInfo;
+
 /**
  * Presenter interface
  * @author Vis.Lee
@@ -11,13 +13,18 @@ package com.ptv.Presenter;
 public interface IPresenter {
 
 	/*
-	 * presenter device operation funcs
+	 * terminate / dispose this presenter
 	 */
-	public IPresenter initPresenter() throws Exception;
-	public int releasePresenter() throws Exception;
+	public void terminate();
 	
-	public int getPresenter() throws Exception;
-	public int show() throws Exception;
+	/*
+	 * start to show presentations
+	 */
+	public int showPresentation(CustomerInfo ci) throws Exception;
 	
+	/*
+	 * stop the presentation of the customer
+	 */
+	public int stopPresentation(CustomerInfo ci) throws Exception;
 	
 }
