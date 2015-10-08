@@ -83,7 +83,7 @@ public class DatabaseHandle implements DatabaseConstant {
 				Class.forName(driver);
 				conn = DriverManager.getConnection(DBURL, USERNAME, PASSWORD);
 				
-				logger.info("Connected to the database!!! Getting table list...");
+				logger.debug("Connected to the database!!! Getting table list...");
 				
 				if(logger.isDebugEnabled()){
 					DatabaseMetaData dbm = conn.getMetaData();

@@ -31,20 +31,6 @@ public class PtvDaemonOperations implements PtvConstant{
 	}
 
 
-	/*public boolean checkIDReaders(){
-		
-		boolean ret = false;
-		
-		// id operations
-		LinkedList<UUID> ids = readersManager.pollingAllReaders();
-		
-		// TODO DB operations
-		
-		// TODO presentations
-		
-		return true;
-	}*/
-	
 	public int goOperations() {
 		
 		int retcode = PtvConstant.SUCCESS;
@@ -76,28 +62,6 @@ public class PtvDaemonOperations implements PtvConstant{
 		return retcode;
 	}
 	
-//	private CustomerInfo getCustomerInfoFromDatabase(LinkedList<UUID> ids) {
-//
-//		CustomerInfo ci = null;
-//		
-//		try {
-//			
-//			for( Iterator<UUID> iter = ids.iterator(); iter.hasNext(); ){
-//				
-//				UUID uid = iter.next();
-//				
-//				ci = dbhandle.readCustomerInfo(uid);
-//				
-//			}
-//			
-//		} catch (SQLException e) {
-//			
-//			logger.error("getCustomerInfoFromDataBase exception!");
-//		}
-//		
-//		return ci;
-//	}
-
 
 	public int initOperations() {
 		
@@ -107,7 +71,9 @@ public class PtvDaemonOperations implements PtvConstant{
 		} catch (SQLException e) {
 			logger.error("initOperations : ERR_SQL_CONN", e);
 			return ERR_SQL_CONN;
-		}
+		} 
+		
+		logger.info("initOperations : SQL ready");
 		
 		// get presenter TODO should implement a operator class to management all kinds of the presenters
 		presenter = WebpagePresenter.getPresenter();
@@ -115,6 +81,8 @@ public class PtvDaemonOperations implements PtvConstant{
 		if(presenter == null){
 			logger.error("initOperations : ERR_GET_PRESENTER");
 			return ERR_GET_PRESENTER;
+		} else {
+			logger.info("initOperations : PRESENTER ready");
 		}
 		
 		// init reader manager
@@ -123,6 +91,8 @@ public class PtvDaemonOperations implements PtvConstant{
 		if( readersManager == null ){
 			logger.error("initOperations : ERR_INIT_READERS ");
 			return ERR_INIT_REDERS;
+		} else {
+			logger.info("initOperations : READERS ready");
 		}
 		
 		return 0;

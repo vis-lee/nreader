@@ -214,8 +214,9 @@ public abstract class AbstractReader extends Thread implements IDReader, IDReade
 				
 				// TODO add operation field
 				OperationsEnum op = OperationsEnum.ShowPage;
+				
 				// 3. return the cardID to broker
-				broker.offer(uid);
+				broker.offer(uid, PRODUCER_WAIT_TIME, TimeUnit.MINUTES);
 				
 			} else {
 				logger.error("catched NULL UID!");

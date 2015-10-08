@@ -39,18 +39,19 @@
             <appender-ref ref="error-log" level="error"/>
             <appender-ref ref="console-log" level="debug"/>
         </Logger>
-        <!-- <Root level="debug" additivity="false">
+        
+        <Root level="debug" additivity="false">
             <AppenderRef ref="console-log" level="debug"/>
             <AppenderRef ref="console-err" level="error"/>
             <AppenderRef ref="trace-log" level="debug"/>
             <AppenderRef ref="error-log" level="info"/>
-        </Root> -->
-        <Root level="info" additivity="false">
+        </Root>
+        <!-- <Root level="info" additivity="false">
             <AppenderRef ref="console-log" />
             <AppenderRef ref="console-err" />
             <AppenderRef ref="trace-log" />
             <AppenderRef ref="error-log" />
-        </Root>
+        </Root> -->
     </Loggers>
 </Configuration>
 

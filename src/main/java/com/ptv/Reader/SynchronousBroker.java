@@ -19,7 +19,7 @@ import com.ptv.Daemon.CustomerInfo;
 public class SynchronousBroker {
 	
 	
-	protected static final Logger logger = LogManager.getLogger( AbstractReader.class.getName() );
+	protected static final Logger logger = LogManager.getLogger( SynchronousBroker.class.getName() );
 	
 	/*
 	 * We use SynchronousQueue to restrict only one ID at once.
@@ -41,10 +41,10 @@ public class SynchronousBroker {
 		
 	}
 	
-	public boolean offer(UUID uid, long producerWaitTime, TimeUnit tu){
+	public boolean offer(UUID uid, long producerWaitTime, TimeUnit tu) throws InterruptedException{
 		
 		logger.debug( "thread = {}, offer ID = {} to broker with timer set to {} {} ", Thread.currentThread().getName(), uid, producerWaitTime, tu.toString() );
-		return this.queue.offer(uid);
+		return this.queue.offer(uid, producerWaitTime, tu);
 		
 	}
 	
@@ -65,6 +65,7 @@ public class SynchronousBroker {
 			
 		} catch (InterruptedException e) {
 			
+			// swallow...
 			return null;
 			
 		}
