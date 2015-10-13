@@ -60,6 +60,12 @@ public class SynchronousBroker {
 
 		try {
 			
+			if(logger.isDebugEnabled()){
+				// modify the time if debug mode enabled
+				consumerPollTime = 1;
+				tu = TimeUnit.SECONDS;
+			}
+			
 			logger.debug( "thread = {}, poll from broker with timer set to {} {} ", Thread.currentThread().getName(), consumerPollTime, tu.toString() );
 			return this.queue.poll(consumerPollTime, tu);
 			

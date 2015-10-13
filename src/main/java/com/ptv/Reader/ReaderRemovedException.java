@@ -10,16 +10,25 @@ package com.ptv.Reader;
 public class ReaderRemovedException extends Exception {
 	
 	
-	ReaderRemovedException(String msg, Throwable e){
+	/**
+	 * 
+	 */
+	private static final long serialVersionUID = -6922280503292759404L;
+
+	public ReaderRemovedException(String msg, Throwable e){
 		
 		super(msg, e);
 	}
 	
-	ReaderRemovedException(Throwable e){
+	public ReaderRemovedException(Throwable e){
 		
 		super(e);
 	}
 	
+	public ReaderRemovedException(String s){
+		
+		super(s);
+	}
 	
 	public Throwable getCause(){
 		return super.getCause();

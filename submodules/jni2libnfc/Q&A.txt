@@ -1,0 +1,53 @@
+libnfc installation on windows 64bit:
+
+ Q & A:
+ 1. can't find the libusb
+ 2. The application failed to start correctly (0xc000007b)
+ 
+ sol:
+ 
+  libusb0.dll (32bit) is renamed from libusb0_x86.dll
+  -- install to C:\Windows\syswow64
+  
+  libusb0.sys (32bit)
+  -- install to C:\Windows\system32\drivers
+  
+ --------------------------------------------------------------
+ 3. can't find the libnfc.dll
+ 
+ sol:
+ 
+  libnfc.dll (32bit)
+  -- install to C:\Windows\syswow64
+  
+ --------------------------------------------------------------
+ 4. can't find nfc devices:
+ "D:\pilottv\workspace\projects\libnfc\build\examples>nfc-poll.exe
+  nfc-poll.exe uses libnfc 1.7.1
+  debug   libnfc.config   key: [allow_autoscan], value: [true]
+  debug   libnfc.config   key: [allow_intrusive_scan], value: [false]
+  debug   libnfc.config   Unable to open directory: C:/ptv/libnfc/config/devices.d
+  unknown libnfc.general  log_level is set to 3
+  debug   libnfc.general  allow_autoscan is set to true
+  debug   libnfc.general  allow_intrusive_scan is set to false
+  debug   libnfc.general  0 device(s) defined by user
+  debug   libnfc.general  0 device(s) found using pn53x_usb driver
+  ERROR D:\pilottv\workspace\projects\libnfc\examples\nfc-poll.c:125
+      Unable to open NFC device.
+  "
+ sol:
+ 1. set allow_intrusive_scan to true
+ 2. create the config file under libnfc/config/devices/first.conf with following content:
+    name = "ptv-reader"
+	connstring = "pn532_uart:COM3"
+	
+	
+ --------------------------------------------------------------
+ 5. libnfc could only compile in 32bit format, so we need compile all the others into 32 bit format
+  -1. libnfc.dll
+  -2. PtvJni2Nfc.dll
+  -3. jdk 1.8.0_60 x86 
+  -4. eclipse mars 32bit
+ 
+ 
+ 
