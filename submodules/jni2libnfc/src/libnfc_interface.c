@@ -110,13 +110,14 @@ static size_t szModulations = NUM_MOD;
 void stop_polling(int sig) {
 	(void) sig;
 	if (g_pnd != NULL) {
-		nfc_abort_command(g_pnd);
+		int retcode = nfc_abort_command(g_pnd);
+		printf("received interrupt signal! terminate nfc polling... the retcode = %d ", retcode);
 		WARN("received interrupt signal! terminate nfc polling...");
 	} else {
 		ERR("received interrupt signal! BUT pnd is NULL!");
 	}
 
-	printf("%s, %d, signal is triggered!", __func__, __LINE__);
+	printf("%s, %d, signal is triggered!\n", __func__, __LINE__);
 }
 
 /*
@@ -138,7 +139,12 @@ int get_device_last_error(){
 	if(g_pnd != NULL){
 
 		ret_code = nfc_device_get_last_error(g_pnd);
+		nfc_perror(g_pnd, "get device error: ");
+		printf("nfc_device_get_last_error = %d", ret_code);
 
+	} else {
+
+		printf("get_device_last_error fail!!...");
 	}
 
 	return ret_code;

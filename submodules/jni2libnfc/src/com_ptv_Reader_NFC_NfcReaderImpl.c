@@ -67,11 +67,11 @@ JNIEXPORT jstring JNICALL Java_com_ptv_Reader_NFC_NfcReaderImpl_getDeviceName
 jint throwReaderRemovedException( JNIEnv *env, char *message )
 {
     jclass exClass;
-    char *className = "java/com/ptv/Reader/ReaderRemovedException" ;
+    const char *className = "com/ptv/Reader/ReaderRemovedException" ;
 
     exClass = (*env)->FindClass( env, className );
     if ( exClass == NULL ) {
-        return -1;
+        return -109;
     }
 
     return (*env)->ThrowNew( env, exClass, message );
@@ -91,7 +91,7 @@ JNIEXPORT jstring JNICALL Java_com_ptv_Reader_NFC_NfcReaderImpl_startPolling
 
 	nfc_target = start_polling();
 
-	// cmd abort or device not-exist
+	// normal case
 	if(nfc_target != NULL){
 
 		jnfc_target = (*env)->NewStringUTF(env, nfc_target);
@@ -100,7 +100,10 @@ JNIEXPORT jstring JNICALL Java_com_ptv_Reader_NFC_NfcReaderImpl_startPolling
 
 	} else {
 
-		// check the last error in the nfc device
+		/*
+		 * cmd abort or device not-exist,
+		 * check the last error in the nfc device
+		 */
 		int le = get_device_last_error();
 		jnfc_target = (*env)->NewStringUTF(env, get_nfc_strerror());
 
@@ -135,6 +138,11 @@ JNIEXPORT void JNICALL Java_com_ptv_Reader_NFC_NfcReaderImpl_stopPolling
 	// we need to flush out the buffer before we return to Java
 	fflush(stdout);
 
+
+	stop_polling(SIGINT);
+
+	// we need to flush out the buffer before we return to Java
+	fflush(stdout);
 }
 
 
