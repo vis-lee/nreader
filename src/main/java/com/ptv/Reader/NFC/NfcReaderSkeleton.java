@@ -49,6 +49,8 @@ public class NfcReaderSkeleton extends AbstractReader {
 	@Override
 	public ReaderState initReader() throws Exception {
 		
+		logger.debug("try to init reader device...");
+		
 		// we need to flush out the buffer before we call to JNI
 		System.out.flush();
 		
@@ -79,6 +81,8 @@ public class NfcReaderSkeleton extends AbstractReader {
 				//setup device name
 				deviceName = NfcReaderImpl.getDeviceName();
 				
+				logger.info("init device success, device name = {}", deviceName);
+				
 			} else {
 				
 				// check the NFC device error code
@@ -103,6 +107,7 @@ public class NfcReaderSkeleton extends AbstractReader {
 		
 		if( rs == ReaderState.DEV_UP ){
 			
+			logger.debug("ReaderState is DEV_UP, release it...");
 			__releaseReader();
 		}
 		
@@ -113,10 +118,10 @@ public class NfcReaderSkeleton extends AbstractReader {
 		ReaderState rs = getDevState();
 		
 		if( rs == ReaderState.DEV_UP ) {
-			
+			logger.debug("call to libnfc to release reader...");
 			// call libnfc close
 			NfcReaderImpl.closeNfcDevice();
-			
+			logger.debug("reader closed!");
 			setDevState( ReaderState.DEV_DOWN );
 		}
 		
@@ -163,6 +168,11 @@ public class NfcReaderSkeleton extends AbstractReader {
 		}
 		
 		return id;
+	}
+	
+	public void abortFromReader(){
+		
+		NfcReaderImpl.stopPolling();
 	}
 
 	/*

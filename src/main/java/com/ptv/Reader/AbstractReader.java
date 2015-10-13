@@ -30,7 +30,7 @@ public abstract class AbstractReader extends Thread implements IDReader, IDReade
 	public final static long CONSUMER_POLL_TIME = 10;  // m second
 	public final static long PRODUCER_WAIT_TIME = 1;   // reader worker would wait ptv daemon for PRODUCER_WAIT_TIME minutes
 	
-	public final static long WAIT_TIMER = 3; //seconds
+	public final static long WAIT_TIMER = 1; //seconds
 
 	// a flag to indicate worker to keep working or not
 	protected ReaderState alive = ReaderState.WORKER_DOWN;
@@ -87,7 +87,7 @@ public abstract class AbstractReader extends Thread implements IDReader, IDReade
 						logger.error(e.getMessage(), e);
 					}
 					
-				} else { // if( getReaderState() == ReaderState.DEV_UP )
+				} else { // getReaderState() == ReaderState.DEV_DOWN
 					
 					// 1. init device
 					__initReader();
@@ -138,7 +138,8 @@ public abstract class AbstractReader extends Thread implements IDReader, IDReade
 		ReaderState rs = null;
 		
 		// init device, singleton
-		while( getReaderState() == ReaderState.DEV_DOWN ){
+//		while( alive == ReaderState.WORKER_ALIVE &&
+//				getReaderState() == ReaderState.DEV_DOWN ){
 			
 			try {
 				
@@ -171,7 +172,7 @@ public abstract class AbstractReader extends Thread implements IDReader, IDReade
 					
 				}
 			}
-		}
+//		}
 		
 		return rs;
 		
@@ -223,23 +224,24 @@ public abstract class AbstractReader extends Thread implements IDReader, IDReade
 			}
 			
 			
+		} catch (ReaderRemovedException e) {
+			
+			if( getReaderState() == ReaderState.DEV_DOWN ){
+				
+				// TODO if the device isn't up, clear my state
+				logger.warn("received interrupt and DEV_DOWN. Trying to init device again!", e);
+			}
+			
 		} catch (Exception e) {
 			
 			// if the interrupt caused by the device been detached accidentally or jvm dispose
 			if( Thread.interrupted() ){
-				
-				if( getReaderState() == ReaderState.DEV_DOWN ){
-				
-					// TODO if the device isn't up, clear my state
-					logger.warn("received interrupt and DEV_DOWN. Trying to init device again!", e);
-				}
 				
 				// interrupted by dispose function
 				if( alive == ReaderState.WORKER_DOWN ){
 					
 					logger.debug("received interrupt and WORKER_DOWN, shoule be called from dispose function!", e);
 				}
-				
 			}
 			
 			logger.error(e.getMessage(), e);
@@ -295,7 +297,7 @@ public abstract class AbstractReader extends Thread implements IDReader, IDReade
 	public void releaseReaderWorker() {
 
 		try {
-			
+
 			// terminate the worker first
 			__releaseWorker();
 			
@@ -323,21 +325,29 @@ public abstract class AbstractReader extends Thread implements IDReader, IDReade
 			// stop the worker
 			alive = ReaderState.WORKER_DOWN;
 			
-			if( readerWorker.getState() == Thread.State.WAITING ){
+			logger.debug("alive = {}", alive);
+			logger.debug("readerWorker.getState == {} ", readerWorker.getState().toString() );
+
+			if( readerWorker.getState() == Thread.State.WAITING || 
+				readerWorker.getState() == Thread.State.TIMED_WAITING ) {
 				
 				// interrupt the thread to go to exit
 				readerWorker.interrupt();
 			}
 			
-			// wait worker to finish
-			readerWorker.join();
+			// stop polling
+			abortFromReader();
+			logger.debug("Back from abortFromReader");
 			
-			readerWorker = null;
+			/*
+			 * wait worker to finish
+			 * !!doesn't work!!2015/10/13 Vis
+			 */
+			// readerWorker.join();
+			// readerWorker = null;
 			
-			logger.info( " the {} has been terminated! ", Thread.currentThread().getName() );
-			
+			logger.info( " ## the {} has been terminated! ##", Thread.currentThread().getName() );
 		}
-		
 		
 	}
 	
@@ -369,15 +379,8 @@ public abstract class AbstractReader extends Thread implements IDReader, IDReade
 	 * @see com.ptv.Reader.IDReaderDevice#readIDFromReader()
 	 */
 	abstract public String readIDFromReader() throws Exception;
-
-	// TODO REMOVE THIS
-//	/*
-//	 * get reader reference for operations. The difference 
-//	 * between initReader and getReader is that getReader 
-//	 * return the reader's reference without thinking the 
-//	 * state of device is up or not.
-//	 */
-//	//abstract public IDReader getReader();
+	
+	abstract public void abortFromReader();
 	
 	/*
 	 * @return ReaderName
