@@ -3,11 +3,6 @@ package com.ptv.Daemon;
 
 import org.apache.logging.log4j.Logger;
 
-import com.ptv.Reader.ReadersManager;
-
-import java.util.LinkedList;
-import java.util.concurrent.TimeUnit;
-
 import org.apache.logging.log4j.LogManager;
 
 /**
@@ -26,6 +21,7 @@ public class PtvDaemon
     
     protected PtvDaemon ptvDaemon;
     private PtvDaemonOperations operations;
+    private String PtvDaemonName = PtvDaemon.class.getSimpleName();
     
     Thread shutdownhook = new PtvShutdownHook();
     
@@ -51,9 +47,12 @@ public class PtvDaemon
 		
 		int retcode = 0;
 		
-		// wakeup
-		logger.debug(" ptv daemon start! ");
+		Thread.currentThread().setName(PtvDaemonName);
 		
+		// wakeup
+		logger.debug("### {} is starting!! ###", PtvDaemonName);
+		
+
 		this.ptvDaemon = ptvDaemon;
 		
 		// init
@@ -82,7 +81,7 @@ public class PtvDaemon
 		operations.exitOperations();
 		
 		// ALL end
-		logger.info(" ptv daemon exit! ");
+		logger.info("### {} terminated completely!! ###", Thread.currentThread().getName());
 		
 		return 0;
 	}
@@ -93,10 +92,17 @@ public class PtvDaemon
 	 */
 	public class PtvShutdownHook extends Thread {
 
+		private String name = "PtvShutdownWorker";
+		
 		public void run() {
+			
+			Thread.currentThread().setName(name);
+			logger.debug("### {} start to execute shutdown hook...", Thread.currentThread().getName());
 			
 			// run through the shutdown hooks
 			exitDaemon();
+			
+			logger.info("### {} shutdown completed!! ###", Thread.currentThread().getName());
 			
 		}
 		
@@ -120,7 +126,7 @@ public class PtvDaemon
     		
     		
     	}
-        
+    	
     }
 
 	

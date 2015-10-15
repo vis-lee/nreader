@@ -19,60 +19,50 @@ import com.ptv.Geolocation.Location;
  *
  */
 // TODO need to remove the singleton pattern, db could be connect to multiple servers
-public class DatabaseHandle implements DatabaseConstant {
+public class PtvMSSqlServer implements DatabaseConstant, IDBAccess {
 
-	private static final Logger logger = LogManager.getLogger(DatabaseHandle.class.getName());
+	private static final Logger logger = LogManager.getLogger(PtvMSSqlServer.class.getName());
 	
-	static private final String driver = "net.sourceforge.jtds.jdbc.Driver";
+	static private final String DEFDriver = "net.sourceforge.jtds.jdbc.Driver";
 	
 	protected Connection conn = null;
 	
-	static private DatabaseHandle dbhandle = null;
+//	static private PtvDataBase dbhandle = null;
 	
 	// ensure singleton
-	private DatabaseHandle() throws SQLException {
+	public PtvMSSqlServer() throws SQLException {
 		
-		__connect2DB();
+		__connect2DB(null, null, null, null);
+		
+	}
+	
+	public PtvMSSqlServer(String driver, String url, String username, String password) throws SQLException {
+		
+		__connect2DB(driver, url, username, password);
 		
 	}
 	
 	
-	
-	// connect to DB
-	static public DatabaseHandle getDatabaseHandle() throws SQLException {
+	public boolean createConnection() throws SQLException {
+
+		return createConnection();
 		
-		if( dbhandle == null){
-			return __getDatabaseHandle();
-		}
-		
-		return dbhandle;
 	}
 	
-	static synchronized private DatabaseHandle __getDatabaseHandle() throws SQLException{
-		
-		if(dbhandle == null){
-			
-			dbhandle = new DatabaseHandle();
-		}
-		
-		return dbhandle;
-	}
-	
-	
-	
-	public Connection connectToDatabase() throws SQLException {
+	@Override
+	public boolean createConnection(String driver, String url, String username, String password) throws SQLException {
 		
 		if( conn == null ){
 			
-			conn = __connect2DB();
+			conn = __connect2DB(driver, url, username, password);
 			
 		}
 		
-		return conn;
+		return (conn != null) ? true: false;
 		
 	}
 	
-	synchronized private Connection __connect2DB() throws SQLException {
+	synchronized private Connection __connect2DB(String driver, String url, String username, String password) throws SQLException {
 		
 		ResultSet rs = null;
 		
@@ -80,8 +70,15 @@ public class DatabaseHandle implements DatabaseConstant {
 			
 			try {
 				
+				// check the parameters
+				driver = (driver == null) ? DEFDriver:driver;
+				url = (url == null) ? DBURL:url;
+				username = (username == null) ? USERNAME:username;
+				password = (password == null) ? PASSWORD:password;
+				
+				// try to connect to DB
 				Class.forName(driver);
-				conn = DriverManager.getConnection(DBURL, USERNAME, PASSWORD);
+				conn = DriverManager.getConnection(url, username, password);
 				
 				logger.debug("Connected to the database!!! Getting table list...");
 				
@@ -94,7 +91,7 @@ public class DatabaseHandle implements DatabaseConstant {
 				
 			} catch (ClassNotFoundException e) {
 				
-				logger.error("jtds class not be found! name = " + driver, e);
+				logger.error("jtds class not be found! name = " + DEFDriver, e);
 				
 			} catch (SQLException e) {
 				
@@ -119,6 +116,13 @@ public class DatabaseHandle implements DatabaseConstant {
 		}
 		
 	}
+	
+	public Connection getConnection(){
+		
+		return conn;
+		
+	}
+	
 	synchronized private void __releaseConnection(Connection conn){
 		
         try {
@@ -229,5 +233,7 @@ public class DatabaseHandle implements DatabaseConstant {
 		
 		return retCode;
 	}
+
+
 
 }

@@ -1,6 +1,5 @@
 package com.ptv.Daemon;
 
-import java.sql.SQLException;
 import java.util.Iterator;
 import java.util.LinkedList;
 import java.util.UUID;
@@ -8,7 +7,8 @@ import java.util.UUID;
 import org.apache.logging.log4j.LogManager;
 import org.apache.logging.log4j.Logger;
 
-import com.ptv.DB.DatabaseHandle;
+import com.ptv.DB.DataBaseOperations;
+import com.ptv.DB.PtvMSSqlServer;
 import com.ptv.Presenter.IPresenter;
 import com.ptv.Presenter.WebpagePresenter;
 import com.ptv.Reader.ReadersManager;
@@ -18,7 +18,7 @@ public class PtvDaemonOperations implements PtvConstant{
 	private static final Logger logger = LogManager.getLogger(PtvDaemon.class.getName());
 	
 	protected ReadersManager readersManager;
-	protected DatabaseHandle dbhandle;
+	protected DataBaseOperations dbOperations;
     
 	private PtvDaemon ptvDaemon = null;
 	private IPresenter presenter = null;
@@ -47,7 +47,7 @@ public class PtvDaemonOperations implements PtvConstant{
 				
 				UUID uid = iter.next();
 				
-				ci = dbhandle.readCustomerInfo(uid);
+				ci = dbOperations.readCustomerInfo(uid);
 				
 				// TODO perform operations by operationEnum
 				presenter.showPresentation(ci);
@@ -67,11 +67,12 @@ public class PtvDaemonOperations implements PtvConstant{
 		
 		// init all components
 		try {
-			dbhandle = DatabaseHandle.getDatabaseHandle();
-		} catch (SQLException e) {
-			logger.error("initOperations : ERR_SQL_CONN", e);
-			return ERR_SQL_CONN;
+			dbOperations = DataBaseOperations.getDatabaseOperations();
+		} catch (Exception e) {
+			logger.error("initOperations : ERR_INIT_DB", e);
+			return ERR_INIT_DB;
 		} 
+		
 		
 		logger.info("initOperations : SQL ready");
 		
@@ -111,7 +112,7 @@ public class PtvDaemonOperations implements PtvConstant{
 		
 		// 3. close the db manager
 		logger.info(" terminating the db ");
-		dbhandle.releaseConnection();
+		dbOperations.releaseOperations();
 		
 		// ALL end
 		logger.info(" ptv operations exit! ");

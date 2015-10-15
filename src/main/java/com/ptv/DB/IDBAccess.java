@@ -21,13 +21,15 @@ public interface IDBAccess {
 	
 //	public DatabaseHandle getDatabaseHandle();
 	
-	public Connection connectToDatabase(String url) throws SQLException;
+	public boolean createConnection(String driver, String url, String username, String password) throws Exception;
 	
-	public void releaseConnection(Connection conn);
+	public void releaseConnection();
 	
-	public CustomerInfo readCustomerInfo(Connection conn, UUID uid) throws SQLException;
+	public Connection getConnection();
 	
-	public int writeCustomerInfo(Connection conn, CustomerInfo customerInfo) throws SQLException;
+	public CustomerInfo readCustomerInfo(UUID uid) throws Exception;
+	
+	public int writeCustomerInfo(CustomerInfo customerInfo) throws Exception;
 	
 	// TODO in the future
 //	public StoreInfo readStoreInfo(UUID storeId);

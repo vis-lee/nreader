@@ -15,7 +15,7 @@ import com.ptv.Geolocation.Location;
  * @author Vis.Lee
  * customer information,
  */
-public class CustomerInfo implements Serializable {
+public class CustomerInfo implements Serializable, Comparable {
 
 	private static final long serialVersionUID = 480515743781027706L;
 
@@ -152,8 +152,24 @@ public class CustomerInfo implements Serializable {
 				            	getLastTimeStampInDateString() );
 		
 	}
-	
-	
+
+	@Override
+	public int compareTo(Object o) throws ClassCastException {
+		
+		if ( !(o instanceof CustomerInfo) ){
+			throw new ClassCastException();
+		}
+		
+		CustomerInfo cci = (CustomerInfo) o;
+		
+		if( this.userID == cci.userID && 
+			this.cardID.compareTo( cci.cardID ) == 0 ){
+			
+			return 0;
+		}
+		
+		return (this.userID > cci.userID) ? 1 : -1;
+	}
 	
 	
 }
