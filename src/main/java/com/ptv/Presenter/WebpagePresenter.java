@@ -86,6 +86,13 @@ public class WebpagePresenter implements IPresenter {
 		case "ES":
 			str = "https://es.yahoo.com/";
 			break;
+		case "PH":
+			str = "https://sg.news.yahoo.com/philippines/";
+			break;
+		case "TH":
+			str = "https://login.yahoo.com/?.src=ym&.intl=th&.lang=th-TH&.done=https%3a//mail.yahoo.com";
+			break;
+			
 			default:
 				str = "http://www.msn.com/zh-tw";
 		}

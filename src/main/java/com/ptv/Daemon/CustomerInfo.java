@@ -15,7 +15,7 @@ import com.ptv.Geolocation.Location;
  * @author Vis.Lee
  * customer information,
  */
-public class CustomerInfo implements Serializable, Comparable {
+public class CustomerInfo implements Serializable, Comparable<Object> {
 
 	private static final long serialVersionUID = 480515743781027706L;
 

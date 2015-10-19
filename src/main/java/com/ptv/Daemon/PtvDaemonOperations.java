@@ -10,6 +10,7 @@ import org.apache.logging.log4j.Logger;
 import com.ptv.DB.DataBaseOperations;
 import com.ptv.DB.PtvMSSqlServer;
 import com.ptv.Presenter.IPresenter;
+import com.ptv.Presenter.PresenterOperations;
 import com.ptv.Presenter.WebpagePresenter;
 import com.ptv.Reader.ReadersManager;
 
@@ -20,14 +21,13 @@ public class PtvDaemonOperations implements PtvConstant{
 	protected ReadersManager readersManager;
 	protected DataBaseOperations dbOperations;
     
-	private PtvDaemon ptvDaemon = null;
-	private IPresenter presenter = null;
+//	private PtvDaemon ptvDaemon = null;
+	private PresenterOperations presenterOperations = null;
 	
 	
 	public PtvDaemonOperations(PtvDaemon ptvDaemon) {
 		
-		this.ptvDaemon = ptvDaemon;
-		this.presenter = WebpagePresenter.getPresenter();
+//		this.ptvDaemon = ptvDaemon;
 	}
 
 
@@ -50,7 +50,7 @@ public class PtvDaemonOperations implements PtvConstant{
 				ci = dbOperations.readCustomerInfo(uid);
 				
 				// TODO perform operations by operationEnum
-				presenter.showPresentation(ci);
+				presenterOperations.showPresentation(ci);
 				
 			}
 			
@@ -65,7 +65,7 @@ public class PtvDaemonOperations implements PtvConstant{
 
 	public int initOperations() {
 		
-		// init all components
+		// init database
 		try {
 			dbOperations = DataBaseOperations.getDatabaseOperations();
 		} catch (Exception e) {
@@ -73,18 +73,17 @@ public class PtvDaemonOperations implements PtvConstant{
 			return ERR_INIT_DB;
 		} 
 		
-		
 		logger.info("initOperations : SQL ready");
 		
-		// get presenter TODO should implement a operator class to management all kinds of the presenters
-		presenter = WebpagePresenter.getPresenter();
-		
-		if(presenter == null){
+		// init presenter
+		try {
+			presenterOperations = PresenterOperations.getPresentOperations();
+		} catch (Exception e) {
 			logger.error("initOperations : ERR_GET_PRESENTER");
 			return ERR_GET_PRESENTER;
-		} else {
-			logger.info("initOperations : PRESENTER ready");
 		}
+		
+		logger.info("initOperations : PRESENTER ready");
 		
 		// init reader manager
 		readersManager = ReadersManager.getReadersManager();
@@ -108,7 +107,7 @@ public class PtvDaemonOperations implements PtvConstant{
 		
 		// 2. terminate the presenter
 		logger.info(" terminating the webpager ");
-		presenter.terminate();
+		presenterOperations.terminate();
 		
 		// 3. close the db manager
 		logger.info(" terminating the db ");
