@@ -9,8 +9,17 @@ libnfc installation on windows 64bit:
   libusb0.dll (32bit) is renamed from libusb0_x86.dll
   -- install to C:\Windows\syswow64
   
-  libusb0.sys (32bit)
+  libusb0.sys (32bit)  -- not necessary
   -- install to C:\Windows\system32\drivers
+  
+  sol2:
+  The application failed to start correctly (0xc000007b). Click OK to close the application.
+
+  *FIX*
+  In CMAKE choose
+  libusb-win32-bin-1.2.6.0\lib\msvc_x64\libusb.lib
+  as your
+  LIBUSB_LIBRARIES value
   
  --------------------------------------------------------------
  3. can't find the libnfc.dll
@@ -50,4 +59,12 @@ libnfc installation on windows 64bit:
   -4. eclipse mars 32bit
  
  
+  --------------------------------------------------------------
+  6. install the CP210x_VCP of SLAB driver for DMA-NFC-Reader
+   -1. go to https://www.silabs.com/products/mcu/Pages/USBtoUARTBridgeVCPDrivers.aspx and download the driver 
+   -2. install the vcp driver
+   
+  -------------------------------------------------------------- 
+  7.
+  
  
