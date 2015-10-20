@@ -109,7 +109,7 @@ public class FilePresenter implements IPresenter {
 
 	protected String genCommands(CustomerInfo ci) {
 		
-		String cmd = new String(fpcmd + " /");
+		String cmd = new String(fpcmd + " /c");
 		
 		int index = regions.indexOf(ci.getLocation());
 		

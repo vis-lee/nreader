@@ -3,7 +3,6 @@
  */
 package com.ptv.DB;
 
-import java.awt.dnd.DnDConstants;
 import java.io.File;
 import java.io.FileInputStream;
 import java.io.FileNotFoundException;
@@ -110,7 +109,8 @@ public class FileDataBase implements IDBAccess {
 	        
 		} catch (FileNotFoundException e) {
 			
-			logger.error("can't find the file {} ", uid, e);
+			// swallow
+			logger.error("can't find the file {} ", uid);
 			
 			// FIXME write to file, in PoC mode
 			ci = CustomerInfo.genDummyCustomerInfo(uid);

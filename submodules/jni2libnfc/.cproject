@@ -35,13 +35,13 @@
 								<option defaultValue="gnu.c.optimization.level.none" id="gnu.c.compiler.option.optimization.level.561771434" name="Optimization Level" superClass="gnu.c.compiler.option.optimization.level" valueType="enumerated"/>
 								<option id="gnu.c.compiler.option.debugging.level.797088144" name="Debug Level" superClass="gnu.c.compiler.option.debugging.level" value="gnu.c.debugging.level.max" valueType="enumerated"/>
 								<option id="gnu.c.compiler.option.include.paths.658846707" name="Include paths (-I)" superClass="gnu.c.compiler.option.include.paths" valueType="includePath">
-									<listOptionValue builtIn="false" value="&quot;C:\TDM-GCC-64\include&quot;"/>
 									<listOptionValue builtIn="false" value="&quot;C:\Program Files\Java\jdk1.8.0_51\include&quot;"/>
 									<listOptionValue builtIn="false" value="&quot;C:\Program Files\Java\jdk1.8.0_51\include\win32&quot;"/>
 									<listOptionValue builtIn="false" value="&quot;${workspace_loc:/PtvJni2Nfc/include}&quot;"/>
 									<listOptionValue builtIn="false" value="&quot;C:\projects\libnfc_src\include&quot;"/>
 									<listOptionValue builtIn="false" value="&quot;C:\projects\libnfc_src\contrib\win32&quot;"/>
 									<listOptionValue builtIn="false" value="&quot;C:\projects\libnfc_src\utils&quot;"/>
+									<listOptionValue builtIn="false" value="&quot;${MINGW_HOME}\include&quot;"/>
 								</option>
 								<option id="gnu.c.compiler.option.dialect.std.1448253431" name="Language standard" superClass="gnu.c.compiler.option.dialect.std" value="gnu.c.compiler.dialect.default" valueType="enumerated"/>
 								<option id="gnu.c.compiler.option.misc.other.1719909324" name="Other flags" superClass="gnu.c.compiler.option.misc.other" value="-c -fmessage-length=0 -m32 " valueType="string"/>
@@ -55,7 +55,7 @@
 									<listOptionValue builtIn="false" value="libnfc"/>
 								</option>
 								<option id="gnu.c.link.option.paths.1392169465" name="Library search path (-L)" superClass="gnu.c.link.option.paths" valueType="libPaths">
-									<listOptionValue builtIn="false" value="&quot;C:\Users\Redmine\Documents\workspace\git\ptv-daemon\submodules\jni2libnfc\lib&quot;"/>
+									<listOptionValue builtIn="false" value="../lib"/>
 								</option>
 								<inputType id="cdt.managedbuild.tool.gnu.c.linker.input.48978807" superClass="cdt.managedbuild.tool.gnu.c.linker.input">
 									<additionalInput kind="additionalinputdependency" paths="$(USER_OBJS)"/>
