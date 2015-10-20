@@ -99,7 +99,7 @@ public class FilePresenter implements IPresenter {
 
 		cancelPresentation();
 
-		logger.debug("ci ={}, \n\texecute the command: {}", cmd);
+		logger.debug("ci ={}, \n\texecute the command: {}", ci, cmd);
 		
 		// call to the NFCCommand.exe
 		currentNFCCmd = Runtime.getRuntime().exec(cmd);

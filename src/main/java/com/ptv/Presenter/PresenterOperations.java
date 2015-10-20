@@ -27,7 +27,7 @@ public class PresenterOperations {
 			
 		} else {
 			
-			FPCMD = System.getProperty("fpexecmd") + " /";
+			FPCMD = System.getProperty("fpexecmd");
 			ipresenter = (IPresenter) new FilePresenter(FPCMD);
 			
 		}
