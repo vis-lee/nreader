@@ -255,6 +255,12 @@ char * start_polling(void) {
 	int res = 0;
 	char *target = NULL;
 
+	// if card presented, we treat it as the previous one
+	if(0 == nfc_initiator_target_is_present(g_pnd, NULL)){
+		printf("Waiting for card removing...");
+		while (0 == nfc_initiator_target_is_present(g_pnd, NULL)) {}
+	}
+
 	if ((res = nfc_initiator_poll_target(g_pnd, nmModulations, szModulations, uiPollNr, uiPeriod, &nt)) < 0) {
 		nfc_perror(g_pnd, "nfc_initiator_poll_target");
 		printf("%s, %d, return code = %d", __func__, __LINE__, res);
@@ -263,8 +269,8 @@ char * start_polling(void) {
 	if (res > 0) {
 		target = show_nfc_target(&nt, verbose);
 
-		printf("Waiting for card removing...");
-		while (0 == nfc_initiator_target_is_present(g_pnd, NULL)) {}
+//		printf("Waiting for card removing...");
+//		while (0 == nfc_initiator_target_is_present(g_pnd, NULL)) {}
 
 	} else {
 		printf("No target found.\n");
